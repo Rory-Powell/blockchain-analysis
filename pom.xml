@@ -6,25 +6,18 @@
 
     <groupId>com.rpowell</groupId>
     <artifactId>myProject</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
 
+    <modules>
+        <module>api-v1-client-java</module>
+        <module>blockchain-analysis</module>
+    </modules>
+
     <repositories>
-        <!--<repository>-->
-            <!--<id>api-v1-client-java-mvn-repo</id>-->
-            <!--<url>https://raw.githubusercontent.com/blockchain/api-v1-client-java/mvn-repo/</url>-->
-            <!--<snapshots>-->
-                <!--<enabled>true</enabled>-->
-                <!--<updatePolicy>always</updatePolicy>-->
-            <!--</snapshots>-->
-        <!--</repository>-->
     </repositories>
 
     <dependencies>
-        <dependency>
-            <groupId>info.blockchain</groupId>
-            <artifactId>api</artifactId>
-            <version>LATEST</version> <!-- for a specific version see the list of tags -->
-        </dependency>
     </dependencies>
 
     <build>

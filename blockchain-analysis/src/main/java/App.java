@@ -3,7 +3,7 @@ import network.Requests;
 
 import java.io.IOException;
 
-public class main {
+public class App {
 
    public static String BLOCK_HASH = "0000000000000bae09a7a393a8acded75aa67e46cb81f7acaa5ad94f9eacd103";
 
