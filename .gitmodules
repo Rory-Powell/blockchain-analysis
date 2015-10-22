@@ -1,0 +1,3 @@
+[submodule "api-v1-client-java"]
+	path = api-v1-client-java
+	url = git@github.com:blockchain/api-v1-client-java.git
