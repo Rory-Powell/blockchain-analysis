@@ -13,9 +13,10 @@
 
     <dependencies>
         <dependency>
-            <groupId>info.blockchain</groupId>
-            <artifactId>api</artifactId>
-            <version>1.0.3</version>
+            <groupId>org.bitcoinj</groupId>
+            <artifactId>bitcoinj-core</artifactId>
+            <version>0.13.3</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
