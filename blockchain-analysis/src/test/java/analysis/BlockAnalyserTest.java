@@ -1,9 +1,11 @@
 package analysis;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.bitcoinj.core.Block;
+import org.bitcoinj.utils.BlockFileLoader;
+import org.junit.*;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 
@@ -20,7 +22,13 @@ public class BlockAnalyserTest {
 
     @After
     public void tearDown() throws Exception {
+    }
 
+    @Test @Ignore
+    public void testGetBlocks() {
+        List<Block> blocks = blockAnalyser.getBlocks();
+        int knownBlockCount = 119965;
+        assertEquals(knownBlockCount, blocks.size());
     }
 
     @Test

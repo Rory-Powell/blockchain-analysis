@@ -2,8 +2,8 @@ package analysis;
 
 import org.bitcoinj.core.*;
 import org.bitcoinj.params.MainNetParams;
-import org.bitcoinj.script.Script;
-import org.bitcoinj.wallet.WalletTransaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import parsing.BlockChainParser;
 
 import java.text.SimpleDateFormat;
@@ -17,19 +17,24 @@ import java.util.Map;
  */
 public class BlockAnalyser {
 
+    public static final String DEFAULT_PATH="/home/rpowell/dev/resources/blocks/5";
+    private static final Logger log = LoggerFactory.getLogger(BlockAnalyser.class);
     private BlockChainParser blockChainParser;
     private List<Block> blocks;
     private List<Transaction> transactions;
     private Wallet wallet = new Wallet(new MainNetParams());
 
     public BlockAnalyser() {
-        blockChainParser = new BlockChainParser();
-        blocks = blockChainParser.getBlocks();
+        this(DEFAULT_PATH);
     }
 
     public BlockAnalyser(String path) {
         blockChainParser = new BlockChainParser(path);
-        blocks = blockChainParser.getBlocks();
+        blocks = blockChainParser.parseBlocks();
+    }
+
+    public List<Block> getBlocks() {
+        return blocks;
     }
 
     public double averageTransactionCountPerBlock() {
