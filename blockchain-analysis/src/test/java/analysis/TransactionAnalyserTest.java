@@ -27,7 +27,7 @@ public class TransactionAnalyserTest {
     }
 
     @Test @Ignore
-    public void testAverageTransatransactionAnalyserctionCountPerBlock() {
+    public void testAverageTransactionCountPerBlock() {
         double averageTransactionCountPerBlock = transactionAnalyser.averageTransactionCountPerBlock();
         assertTrue(averageTransactionCountPerBlock > 50);
     }

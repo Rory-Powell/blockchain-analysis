@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class TransactionAnalyser {
 
-    public static final String DEFAULT_PATH="/home/rpowell/dev/resources/blocks/1";
+    public static final String DEFAULT_PATH="/home/rpowell/dev/resources/full/blocks";
     private static final Logger log = LoggerFactory.getLogger(TransactionAnalyser.class);
     private Wallet wallet = new Wallet(new MainNetParams());
 
