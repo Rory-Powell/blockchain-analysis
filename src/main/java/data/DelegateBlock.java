@@ -1,5 +1,7 @@
-package analysis;
+package data;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.bitcoinj.core.Block;
 import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.core.Transaction;
@@ -12,25 +14,37 @@ import java.util.stream.Collectors;
  */
 public class DelegateBlock {
 
-    // The hash of the block
-    private final Sha256Hash blockHash;
+    @JsonProperty(value="blockHash")
+    private Sha256Hash blockHash;
 
-    // The transactions in the block
+    @JsonProperty(value="transactions")
     private List<DelegateTransaction> transactions;
 
-    /**
-     * constructor.
-     * @param block The block to create this delegate block from.
-     */
+    public DelegateBlock() {
+    }
+
     public DelegateBlock(Block block) {
         blockHash = block.getHash();
         transactions = createDelegateTransactions(block);
     }
 
-    /**
-     * Getter for delegate transactions.
-     * @return The list of delegate transactions.
-     */
+    public DelegateBlock(String blockHash, List<DelegateTransaction> transactions) {
+        this.blockHash = new Sha256Hash(blockHash);
+        this.transactions = transactions;
+    }
+
+    public void setBlockHash(String blockHash) {
+        this.blockHash = new Sha256Hash(blockHash);
+    }
+
+    public void setTransactions(List<DelegateTransaction> transactions) {
+        this.transactions = transactions;
+    }
+
+    public String getBlockHash() {
+        return blockHash.toString();
+    }
+
     public List<DelegateTransaction> getTransactions() {
         return transactions;
     }
@@ -46,8 +60,8 @@ public class DelegateBlock {
 
         if (transactions != null && !transactions.isEmpty()) {
             delegateTransactions = block.getTransactions().stream()
-                                                        .map(DelegateTransaction::new)
-                                                        .collect(Collectors.toList());
+                    .map(DelegateTransaction::new)
+                    .collect(Collectors.toList());
         }
         return delegateTransactions;
     }
