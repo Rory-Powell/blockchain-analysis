@@ -1,6 +1,7 @@
 package parsing;
 
 import data.DelegateBlock;
+import org.bitcoinj.core.Block;
 
 import java.io.File;
 import java.util.List;
@@ -10,8 +11,9 @@ import java.util.List;
  */
 public class FileSystemHandler {
 
-    public static final String DAT_PATH ="/home/rpowell/dev/resources/blockchain-analysis/blocks/all";
-    public static final String JSON_PATH = "/home/rpowell/dev/resources/blockchain-analysis/output/json_blocks";
+    public static final String DAT_PATH ="/home/rpowell/dev/projects/final-project/resources";
+    public static final String JSON_PATH = "/home/rpowell/dev/projects/final-project/output";
+
     private final String datPath;
     private final String jsonPath;
 
@@ -24,6 +26,12 @@ public class FileSystemHandler {
     public FileSystemHandler(String datPath, String jsonPath) {
         this.datPath = datPath;
         this.jsonPath = jsonPath;
+    }
+
+    public List<Block> parseBlockOriginalFormat() {
+        List<File> filesOnDatPath = FileWalker.discoverFilesOnPath(datPath);
+        List<Block> blocks = blockParser.parseBlocksOriginalFormat(filesOnDatPath);
+        return blocks;
     }
 
     public void parseAndWriteBlocks() {

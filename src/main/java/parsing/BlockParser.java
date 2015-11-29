@@ -25,6 +25,7 @@ public class BlockParser {
 
     // Parameters for connecting to the bitcoin network
     private NetworkParameters networkParameters;
+
     // The configuration context, stashed in thread local storage (TLS)
     private Context context;
 
@@ -37,6 +38,18 @@ public class BlockParser {
     public BlockParser() {
         networkParameters = new MainNetParams();
         context = new Context(networkParameters);
+    }
+
+    public List<Block> parseBlocksOriginalFormat(List<File> files) {
+        List<Block> blocks = new ArrayList<>();
+        BlockFileLoader blockFileLoader = new BlockFileLoader(networkParameters, files);
+
+        for (Block block : blockFileLoader) {
+            log.info("Parsed block " + block.getHashAsString());
+            blocks.add(block);
+        }
+
+        return blocks;
     }
 
     /**
@@ -53,7 +66,7 @@ public class BlockParser {
         for (Block block : blockFileLoader) {
             DelegateBlock delegateBlock = new DelegateBlock(block);
 
-//            try {
+            try {
                 // Build file path
                 String filePath = path.concat("/" + fileNameIncrement + ".json");
                 fileNameIncrement++;
@@ -61,10 +74,10 @@ public class BlockParser {
                 // Write to disk
                 File file = new File(filePath);
                 log.info("Parsed block " + delegateBlock.getBlockHash() + ". Writing to disk as " + file.getName());
-//                mapper.writeValue(file, delegateBlock);
-//            } catch (IOException e) {
-//                log.error("IOException while writing file", e);
-//            }
+                mapper.writeValue(file, delegateBlock);
+            } catch (IOException e) {
+                log.error("IOException while writing file", e);
+            }
         }
 
         logTiming(startTimeMill);

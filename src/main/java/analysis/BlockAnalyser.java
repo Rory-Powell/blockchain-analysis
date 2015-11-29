@@ -2,12 +2,15 @@ package analysis;
 
 import data.DelegateBlock;
 import data.DelegateTransaction;
+import org.bitcoinj.core.Block;
+import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.Wallet;
 import org.bitcoinj.params.MainNetParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import parsing.FileSystemHandler;
-import java.util.List;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -16,13 +19,50 @@ import java.util.stream.Collectors;
 public class BlockAnalyser {
 
     private static final Logger log = LoggerFactory.getLogger(BlockAnalyser.class);
-    private Wallet wallet = new Wallet(new MainNetParams());
+    private static Wallet wallet = new Wallet(new MainNetParams());
     private List<DelegateBlock> blocks = null;
     private List<DelegateTransaction> allTransactions = null;
     private FileSystemHandler fileSystemHandler = new FileSystemHandler();
 
     public BlockAnalyser() {
 
+    }
+
+    public Map<Long, Integer> mapTransactionsToTime(List<Block> blocks) {
+        Map<Long, Integer> timeToTransactionCount = new TreeMap<>();
+
+        for(Block block : blocks) {
+            Long time = block.getTimeSeconds();
+
+            Integer transactionCount;
+            List<Transaction> transactions = block.getTransactions();
+            if (transactions != null) {
+                transactionCount = transactions.size();
+            }
+            else {
+                transactionCount = 0;
+            }
+
+            timeToTransactionCount.put(time, transactionCount);
+        }
+
+        return timeToTransactionCount;
+    }
+
+    public List<Transaction> getTransactions(List<Block> blocks) {
+        List<Transaction> transactions = new ArrayList<>();
+        for(Block block : blocks) {
+            List<Transaction> currentTransactions = block.getTransactions();
+
+            if(currentTransactions != null) {
+                transactions.addAll(currentTransactions);
+            }
+        }
+        return transactions;
+    }
+
+    public List<Block> parseBlocksOriginalFormat() {
+        return fileSystemHandler.parseBlockOriginalFormat();
     }
 
     public void parseAndWriteBlocks() {
