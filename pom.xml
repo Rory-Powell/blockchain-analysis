@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>project.blockchain-analysis</groupId>
-    <artifactId>blockchain-analysis-server</artifactId>
+    <artifactId>blockchain-analysis</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
