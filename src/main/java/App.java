@@ -6,15 +6,9 @@ import java.io.IOException;
 
 
 public class App {
-   private static final Logger log = LoggerFactory.getLogger(App.class);
+    private static final Logger log = LoggerFactory.getLogger(App.class);
 
-   public static void main(String[] args) {
-      BlockAnalyser blockAnalyser = new BlockAnalyser();
+    public static void main(String[] args) {
 
-      try {
-         blockAnalyser.createTransactions();
-      } catch (IOException e) {
-         e.printStackTrace();
-      }
-   }
+    }
 }

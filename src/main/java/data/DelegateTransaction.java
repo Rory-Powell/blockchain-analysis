@@ -9,7 +9,7 @@ import org.bitcoinj.core.Transaction;
  */
 public class DelegateTransaction {
 
-    @JsonProperty(value="transactionHash")
+    @JsonProperty(value = "transactionHash")
     private Sha256Hash transactionHash;
 
     public DelegateTransaction() {

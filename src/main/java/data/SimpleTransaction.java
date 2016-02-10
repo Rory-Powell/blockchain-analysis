@@ -33,6 +33,14 @@ public class SimpleTransaction {
         return this.inputs;
     }
 
+    public void setOutputs(Set<String> outputs) {
+        this.outputs = outputs;
+    }
+
+    public void setInputs(Set<String> inputs) {
+        this.inputs = inputs;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

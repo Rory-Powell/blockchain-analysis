@@ -1,7 +1,8 @@
-package parsing;
+package filesystem;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import parsing.BlockParser;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,17 +12,17 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Created by rpowell on 13/11/15.
- */
+// Class to walk the file system and discover files.
 public class FileWalker {
-
     private static final Logger log = LoggerFactory.getLogger(BlockParser.class);
+    public static final String DAT_PATH = "/home/rpowell/dev/projects/final-project/resources";
 
-    /**
-     * Search the file path for block files.
-     * @return The list of files.
-     */
+    // Search the default path for files
+    public static List<File> discoverFilesOnDefaultPath() {
+        return discoverFilesOnPath(DAT_PATH);
+    }
+
+    // Search a given path for files
     public static List<File> discoverFilesOnPath(String path) {
         List<File> discoveredFiles = null;
         log.info("Walking file path " + path);

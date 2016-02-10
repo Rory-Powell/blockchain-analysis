@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
  */
 public class DelegateBlock {
 
-    @JsonProperty(value="blockHash")
+    @JsonProperty(value = "blockHash")
     private Sha256Hash blockHash;
 
-    @JsonProperty(value="transactions")
+    @JsonProperty(value = "transactions")
     private List<DelegateTransaction> transactions;
 
     public DelegateBlock() {
@@ -51,6 +51,7 @@ public class DelegateBlock {
 
     /**
      * Extract the Transactions in the provided block and create delegate transactions from them.
+     *
      * @param block The source block
      * @return A list of delegate transactions for the block.
      */
