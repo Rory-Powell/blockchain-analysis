@@ -1,14 +1,13 @@
 package parsing;
 
 import data.SimpleTransaction;
+import edu.uci.ics.jung.graph.AbstractGraph;
 import org.bitcoinj.core.*;
 import org.bitcoinj.script.ScriptChunk;
 import org.bitcoinj.utils.BlockFileLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,15 +21,13 @@ public class BlockParser {
     private NetworkParameters networkParameters;
     private Context context;
 
-    public static final String TAB_PATH = "/home/rpowell/dev/projects/final-project/";
-
     // Constructor
     public BlockParser(NetworkParameters netParams) {
         networkParameters = netParams;
         context = new Context(networkParameters);
     }
 
-    public void detectCommunities(List<File> files) {
+    public void parseBlockFiles(List<File> files) {
         BlockFileLoader blockFileLoader = new BlockFileLoader(networkParameters, files);
 
         for (Block block : blockFileLoader) {
@@ -46,11 +43,6 @@ public class BlockParser {
                 }
             }
         }
-    }
-
-    // Perform community detection
-    private void detectCommunities(Set<SimpleTransaction> transactionsInBlock) {
-
     }
 
     // Extract inputs from transaction.

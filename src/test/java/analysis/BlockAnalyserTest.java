@@ -1,10 +1,6 @@
 package analysis;
 
-import data.DelegateBlock;
 import org.junit.*;
-import parsing.BlockParser;
-
-import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
