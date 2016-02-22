@@ -1,7 +1,6 @@
-package parsing;
+package util;
 
-import data.SimpleTransaction;
-import edu.uci.ics.jung.graph.AbstractGraph;
+import domain.Transaction;
 import org.bitcoinj.core.*;
 import org.bitcoinj.script.ScriptChunk;
 import org.bitcoinj.utils.BlockFileLoader;
@@ -33,20 +32,20 @@ public class BlockParser {
         for (Block block : blockFileLoader) {
             log.info("Parsed block " + block.getHashAsString());
 
-            Set<SimpleTransaction> simpleTransactions = new HashSet<>();
+            Set<Transaction> transactions = new HashSet<>();
             if (block.getTransactions() != null) {
-                for (Transaction transaction : block.getTransactions()) {
-                    SimpleTransaction simpleTransaction = new SimpleTransaction();
+                for (org.bitcoinj.core.Transaction transaction : block.getTransactions()) {
+                    Transaction simpleTransaction = new Transaction();
                     simpleTransaction.setInputs(extractInputsFromTransaction(transaction));
                     simpleTransaction.setOutputs(extractOutputsFromTransaction(transaction));
-                    simpleTransactions.add(simpleTransaction);
+                    transactions.add(simpleTransaction);
                 }
             }
         }
     }
 
     // Extract inputs from transaction.
-    private Set<String> extractInputsFromTransaction(Transaction transaction) {
+    private Set<String> extractInputsFromTransaction(org.bitcoinj.core.Transaction transaction) {
         Set<String> inputs = new HashSet<>();
         for (TransactionInput input : transaction.getInputs()) {
             try {
@@ -67,7 +66,7 @@ public class BlockParser {
     }
 
     // Extract outputs from a transaction.
-    private Set<String> extractOutputsFromTransaction(Transaction transaction) {
+    private Set<String> extractOutputsFromTransaction(org.bitcoinj.core.Transaction transaction) {
         Set<String> outputs = new HashSet<>();
         for (TransactionOutput output : transaction.getOutputs()) {
             try {

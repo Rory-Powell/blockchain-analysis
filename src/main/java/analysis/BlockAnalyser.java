@@ -1,11 +1,10 @@
 package analysis;
 
-import filesystem.FileWalker;
 import org.bitcoinj.core.*;
 import org.bitcoinj.params.MainNetParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import parsing.BlockParser;
+import util.BlockParser;
 
 public class BlockAnalyser {
 

@@ -1,12 +1,9 @@
-package data;
+package domain;
 
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by rpowell on 05/12/15.
- */
-public class SimpleTransaction {
+public class Transaction {
 
     // The sender address
     private Set<String> inputs = new HashSet<>();
@@ -14,7 +11,7 @@ public class SimpleTransaction {
     // The receiver address
     private Set<String> outputs = new HashSet<>();
 
-    public SimpleTransaction() {
+    public Transaction() {
     }
 
     public void addInput(String input) {
@@ -46,11 +43,10 @@ public class SimpleTransaction {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        SimpleTransaction that = (SimpleTransaction) o;
+        Transaction that = (Transaction) o;
 
         if (inputs != null ? !inputs.equals(that.inputs) : that.inputs != null) return false;
         return !(outputs != null ? !outputs.equals(that.outputs) : that.outputs != null);
-
     }
 
     @Override
