@@ -24,4 +24,12 @@ public class PublicKeyServiceImpl implements PublicKeyService {
     public void saveAllKeys(Iterable<PublicKey> publicKeys) {
         publicKeyRepository.save(publicKeys);
     }
+
+    public boolean checkExists(String key) {
+        return publicKeyRepository.findByPublicKey(key) != null;
+    }
+
+    public void deleteAll() {
+        publicKeyRepository.deleteAll();
+    }
 }

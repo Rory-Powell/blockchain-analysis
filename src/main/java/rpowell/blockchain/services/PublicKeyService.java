@@ -9,4 +9,8 @@ public interface PublicKeyService {
     void saveKey(PublicKey key);
 
     void saveAllKeys(Iterable<PublicKey> publicKeys);
+
+    boolean checkExists(String key);
+
+    void deleteAll();
 }

@@ -1,26 +1,17 @@
 package rpowell.blockchain;
 
 import org.neo4j.ogm.session.SessionFactory;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.neo4j.config.Neo4jConfiguration;
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 import org.springframework.data.neo4j.server.Neo4jServer;
 import org.springframework.data.neo4j.server.RemoteServer;
-import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@Import(RepositoryRestMvcConfiguration.class)
-@EnableTransactionManagement
+@SpringBootApplication
 @EnableNeo4jRepositories(basePackages = "rpowell.blockchain.repositories")
-@ComponentScan(basePackages = "rpowell.blockchain.services")
-@EnableScheduling
-@EnableAutoConfiguration
-@Configuration
-public class Config extends Neo4jConfiguration {
+@EnableTransactionManagement
+public class AppConfiguration extends Neo4jConfiguration {
 
     public static final String URL = "http://localhost:7474";
 

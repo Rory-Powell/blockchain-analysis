@@ -8,6 +8,6 @@ import org.springframework.data.repository.query.Param;
 @Repository
 public interface PublicKeyRepository extends GraphRepository<PublicKey> {
 
-    PublicKey findByPublicKey(@Param("key") String key);
+    PublicKey findByPublicKey(@Param("publicKey") String publicKey);
 }
 

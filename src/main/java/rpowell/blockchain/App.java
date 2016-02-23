@@ -3,21 +3,22 @@ package rpowell.blockchain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import rpowell.blockchain.domain.PublicKey;
 import rpowell.blockchain.services.ParseService;
 import rpowell.blockchain.services.PublicKeyService;
-
 import java.io.IOException;
 
-@Configuration
-@Import(Config.class)
-@RestController("/")
-public class App extends WebMvcConfigurerAdapter {
+@Import(AppConfiguration.class)
+public class App implements CommandLineRunner {
+
+    @Autowired
+    PublicKeyService pubKeyService;
+
+    @Autowired
+    ParseService parseService;
 
     public static void main(String[] args) throws IOException {
         SpringApplication.run(App.class, args);
@@ -25,9 +26,18 @@ public class App extends WebMvcConfigurerAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(App.class);
 
-    @Autowired
-    PublicKeyService pubKeyService;
+    @Override
+    public void run(String... args) throws Exception {
+        log.info("Started Application");
 
-    @Autowired
-    ParseService parseService;
+        PublicKey publicKey = new PublicKey("Test-key-1");
+        PublicKey publicKey2 = new PublicKey("Test-key-2");
+
+//        pubKeyService.saveKey(publicKey);
+//        pubKeyService.saveKey(publicKey2);
+
+        PublicKey publicKey1 = pubKeyService.findByKey("Test-key-1");
+        pubKeyService.deleteAll();
+        PublicKey publicKey3 = pubKeyService.findByKey("Test-key-1");
+    }
 }
