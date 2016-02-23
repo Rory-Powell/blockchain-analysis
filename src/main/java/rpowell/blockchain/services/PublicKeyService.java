@@ -1,27 +1,12 @@
 package rpowell.blockchain.services;
 
 import rpowell.blockchain.domain.PublicKey;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import rpowell.blockchain.repositories.PublicKeyRepository;
 
-@Service
-@Transactional
-public class PublicKeyService {
+public interface PublicKeyService {
 
-    @Autowired
-    PublicKeyRepository publicKeyRepository;
+    PublicKey findByKey(String key);
 
-    public PublicKey findByKey(String key) {
-        return publicKeyRepository.findByPublicKey(key);
-    }
+    void saveKey(PublicKey key);
 
-    public void saveKey(PublicKey key) {
-        publicKeyRepository.save(key);
-    }
-
-    public void saveAllKeys(Iterable<PublicKey> publicKeys) {
-        publicKeyRepository.save(publicKeys);
-    }
+    void saveAllKeys(Iterable<PublicKey> publicKeys);
 }

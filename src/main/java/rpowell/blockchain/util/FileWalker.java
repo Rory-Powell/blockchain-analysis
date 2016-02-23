@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 // Class to walk the file system and discover files.
 public class FileWalker {
-    private static final Logger log = LoggerFactory.getLogger(BlockParser.class);
+    private static final Logger log = LoggerFactory.getLogger(FileWalker.class);
     public static final String DAT_PATH = "/home/rpowell/dev/projects/final-project/resources";
 
     // Search the default path for files

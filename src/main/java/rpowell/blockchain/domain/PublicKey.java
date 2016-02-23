@@ -15,7 +15,7 @@ public class PublicKey {
 
     @GraphId Long id;
 
-    @Property(name="key")
+    @Property(name="publicKey")
     private String key;
 
     @Relationship(type="SENT_TO", direction=Relationship.UNDIRECTED)
