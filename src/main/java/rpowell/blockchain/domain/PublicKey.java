@@ -1,4 +1,4 @@
-package domain;
+package rpowell.blockchain.domain;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.voodoodyne.jackson.jsog.JSOGGenerator;
@@ -18,11 +18,12 @@ public class PublicKey {
     @Property(name="key")
     private String key;
 
-    @Relationship(type="SENT", direction=Relationship.OUTGOING)
+    @Relationship(type="SENT_TO", direction=Relationship.UNDIRECTED)
     private List<PublicKey> sentTo;
 
-    @Relationship(type="SENT", direction=Relationship.INCOMING)
-    private List<PublicKey> receivedFrom;
-
     public PublicKey() {}
+
+    public PublicKey(String key) {
+        this.key = key;
+    }
 }

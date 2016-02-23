@@ -1,3 +1,5 @@
+package rpowell.blockchain;
+
 import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
@@ -15,9 +17,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Import(RepositoryRestMvcConfiguration.class)
 @EnableScheduling
 @EnableAutoConfiguration
-@ComponentScan(basePackages = {"services"})
+@ComponentScan(basePackages = {"rpowell.blockchain.services"})
 @Configuration
-@EnableNeo4jRepositories(basePackages = "repositories")
+@EnableNeo4jRepositories(basePackages = "rpowell.blockchain.repositories")
 public class DbConfiguration extends Neo4jConfiguration {
 
     public static final String URL = "http://localhost:7474";
@@ -29,6 +31,6 @@ public class DbConfiguration extends Neo4jConfiguration {
 
     @Override
     public SessionFactory getSessionFactory() {
-        return new SessionFactory("domain");
+        return new SessionFactory("rpowell.blockchain.domain");
     }
 }

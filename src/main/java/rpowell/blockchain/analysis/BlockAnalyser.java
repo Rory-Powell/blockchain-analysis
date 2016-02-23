@@ -1,10 +1,10 @@
-package analysis;
+package rpowell.blockchain.analysis;
 
 import org.bitcoinj.core.*;
 import org.bitcoinj.params.MainNetParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.BlockParser;
+import rpowell.blockchain.util.BlockParser;
 
 public class BlockAnalyser {
 

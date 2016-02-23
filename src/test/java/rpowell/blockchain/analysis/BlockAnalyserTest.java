@@ -1,4 +1,4 @@
-package analysis;
+package rpowell.blockchain.analysis;
 
 import org.junit.*;
 

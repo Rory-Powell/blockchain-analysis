@@ -1,4 +1,4 @@
-package domain;
+package rpowell.blockchain;
 
 import java.util.HashSet;
 import java.util.Set;

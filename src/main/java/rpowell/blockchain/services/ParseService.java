@@ -1,30 +1,33 @@
-package util;
+package rpowell.blockchain.services;
 
-import domain.Transaction;
+import rpowell.blockchain.domain.PublicKey;
+import rpowell.blockchain.Transaction;
 import org.bitcoinj.core.*;
+import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.script.ScriptChunk;
 import org.bitcoinj.utils.BlockFileLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
-/**
- * Created by rpowell on 08/11/15.
- */
-public class BlockParser {
-    private static final Logger log = LoggerFactory.getLogger(BlockParser.class);
-    private NetworkParameters networkParameters;
-    private Context context;
+@Service
+@Transactional
+public class ParseService {
 
-    // Constructor
-    public BlockParser(NetworkParameters netParams) {
-        networkParameters = netParams;
-        context = new Context(networkParameters);
-    }
+    @Autowired
+    PublicKeyService publicKeyService;
+
+    private static final Logger log = LoggerFactory.getLogger(ParseService.class);
+    private NetworkParameters networkParameters = new MainNetParams();
+    private Context context = new Context(networkParameters);
 
     public void parseBlockFiles(List<File> files) {
         BlockFileLoader blockFileLoader = new BlockFileLoader(networkParameters, files);
@@ -41,7 +44,21 @@ public class BlockParser {
                     transactions.add(simpleTransaction);
                 }
             }
+
+            writeTransactionsToDB(transactions);
         }
+    }
+
+    public void writeTransactionsToDB(Set<Transaction> transactions) {
+            for (Transaction transaction : transactions) {
+                // Get set of public keys
+                Set<PublicKey> publicKeys = transaction.getInputs().stream()
+                        .map(PublicKey::new)
+                        .collect(Collectors.toSet());
+
+                // save
+                publicKeyService.saveAllKeys(publicKeys);
+            }
     }
 
     // Extract inputs from transaction.
@@ -71,8 +88,8 @@ public class BlockParser {
         for (TransactionOutput output : transaction.getOutputs()) {
             try {
                 outputs.add(output.getScriptPubKey()
-                                    .getToAddress(networkParameters, true)
-                                    .toString());
+                        .getToAddress(networkParameters, true)
+                        .toString());
             } catch (ScriptException e) {
                 log.error("Script exception", e);
             }
@@ -103,4 +120,6 @@ public class BlockParser {
         long parseTimeSec = TimeUnit.MILLISECONDS.toSeconds(endTimeMill - startTimeMill);
         log.info("Parse took " + parseTimeSec + " seconds");
     }
+
+
 }

@@ -1,13 +1,13 @@
-package repositories;
+package rpowell.blockchain.repositories;
 
-import domain.PublicKey;
+import rpowell.blockchain.domain.PublicKey;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-@RepositoryRestResource(collectionResourceRel = "pubKeys", path = "pubKeys")
+@RepositoryRestResource(collectionResourceRel = "PublicKey", path = "PublicKey")
 public interface PublicKeyRepository extends GraphRepository<PublicKey> {
 
-    PublicKey findByKey(@Param("key") String key);
+    PublicKey findByPublicKey(@Param("key") String key);
 }
 

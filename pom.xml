@@ -20,7 +20,7 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <start-class>App</start-class>
+        <start-class>rpowell.blockchain.App</start-class>
         <spring-data-neo4j.version>4.0.0.RELEASE</spring-data-neo4j.version>
         <spring-data-releasetrain.version>Gosling-RELEASE</spring-data-releasetrain.version>
     </properties>
