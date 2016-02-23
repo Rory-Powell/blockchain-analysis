@@ -13,14 +13,14 @@ import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguratio
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@EnableTransactionManagement
 @Import(RepositoryRestMvcConfiguration.class)
+@EnableTransactionManagement
+@EnableNeo4jRepositories(basePackages = "rpowell.blockchain.repositories")
+@ComponentScan(basePackages = "rpowell.blockchain.services")
 @EnableScheduling
 @EnableAutoConfiguration
-@ComponentScan(basePackages = {"rpowell.blockchain.services"})
 @Configuration
-@EnableNeo4jRepositories(basePackages = "rpowell.blockchain.repositories")
-public class DbConfiguration extends Neo4jConfiguration {
+public class Config extends Neo4jConfiguration {
 
     public static final String URL = "http://localhost:7474";
 

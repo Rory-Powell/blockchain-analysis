@@ -8,13 +8,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import rpowell.blockchain.domain.PublicKey;
 import rpowell.blockchain.services.ParseService;
 import rpowell.blockchain.services.PublicKeyService;
 
 import java.io.IOException;
 
 @Configuration
-@Import(DbConfiguration.class)
+@Import(Config.class)
 @RestController("/")
 public class App extends WebMvcConfigurerAdapter {
 

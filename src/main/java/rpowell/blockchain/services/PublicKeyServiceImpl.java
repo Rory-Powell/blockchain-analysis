@@ -8,7 +8,7 @@ import rpowell.blockchain.repositories.PublicKeyRepository;
 
 @Service
 @Transactional
-public class PublicKeyServiceImpl implements PublicKeyService{
+public class PublicKeyServiceImpl implements PublicKeyService {
 
     @Autowired
     PublicKeyRepository publicKeyRepository;
