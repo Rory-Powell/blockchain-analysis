@@ -6,7 +6,7 @@ import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.data.repository.query.Param;
 
 @Repository
-public interface PublicKeyRepository extends GraphRepository<PublicKey> {
+public interface IPublicKeyRepository extends GraphRepository<PublicKey> {
 
     PublicKey findByPublicKey(@Param("publicKey") String publicKey);
 }

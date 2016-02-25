@@ -11,54 +11,76 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import rpowell.blockchain.util.FileWalker;
+
 import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class ParseServiceImpl implements ParseService{
+public class ParseServiceImpl implements IParseService {
 
     @Autowired
-    PublicKeyService publicKeyService;
+    IPublicKeyService publicKeyService;
 
-    private static final Logger log = LoggerFactory.getLogger(ParseService.class);
+    private static final Logger log = LoggerFactory.getLogger(IParseService.class);
     private NetworkParameters networkParameters = new MainNetParams();
     private Context context = new Context(networkParameters);
+
+    public void parseBlockFiles() {
+        this.parseBlockFiles(FileWalker.discoverFilesOnDefaultPath());
+    }
 
     public void parseBlockFiles(List<File> files) {
         BlockFileLoader blockFileLoader = new BlockFileLoader(networkParameters, files);
 
+        Set<Transaction> transactions = new HashSet<>();
         for (Block block : blockFileLoader) {
             log.info("Parsed block " + block.getHashAsString());
 
-            Set<Transaction> transactions = new HashSet<>();
             if (block.getTransactions() != null) {
-                for (org.bitcoinj.core.Transaction transaction : block.getTransactions()) {
-                    Transaction simpleTransaction = new Transaction();
-                    simpleTransaction.setInputs(extractInputsFromTransaction(transaction));
-                    simpleTransaction.setOutputs(extractOutputsFromTransaction(transaction));
-                    transactions.add(simpleTransaction);
+                // Map transactions in block to domain format
+                for (org.bitcoinj.core.Transaction blockTransaction : block.getTransactions()) {
+                    Transaction transaction = new Transaction();
+                    transaction.setInputs(extractInputsFromTransaction(blockTransaction));
+                    transaction.setOutputs(extractOutputsFromTransaction(blockTransaction));
+                    transactions.add(transaction);
                 }
             }
-
-            writeTransactionsToDB(transactions);
         }
+        // Write public keys in transaction to database
+        writeTransactionsToDB(transactions);
     }
 
     public void writeTransactionsToDB(Set<Transaction> transactions) {
+        Set<PublicKey> publicKeys = new HashSet<>();
         for (Transaction transaction : transactions) {
-            // Get set of public keys
-            Set<PublicKey> publicKeys = transaction.getInputs().stream()
+            Set<PublicKey> inputs = transaction.getInputs().stream()
                     .map(PublicKey::new)
                     .collect(Collectors.toSet());
 
-            // save
-            publicKeyService.saveAllKeys(publicKeys);
+            Set<PublicKey> outputs = transaction.getOutputs().stream()
+                    .map(PublicKey::new)
+                    .collect(Collectors.toSet());
+
+            for (PublicKey key : inputs) {
+                key.addOutputs(outputs);
+            }
+
+            for (PublicKey key : outputs) {
+                key.addInputs(inputs);
+            }
+
+            // Only save inputs, outputs linked and will be saved in the same transaction
+            publicKeys.addAll(inputs);
         }
+
+        log.info("Preparing to save " + publicKeys.size() + " public keys");
+        // Save
+        publicKeyService.saveAllKeys(publicKeys);
     }
 
     // Extract inputs from transaction.
@@ -97,7 +119,6 @@ public class ParseServiceImpl implements ParseService{
         return outputs;
     }
 
-    // Warning: lots of hacking.
     private boolean checkChunks(List<ScriptChunk> chunks) {
         boolean valid = false;
         if (chunks.size() != 2) { // pre check
@@ -114,12 +135,4 @@ public class ParseServiceImpl implements ParseService{
 
         return valid;
     }
-
-    public static void logTiming(long startTimeMill) {
-        long endTimeMill = System.currentTimeMillis();
-        long parseTimeSec = TimeUnit.MILLISECONDS.toSeconds(endTimeMill - startTimeMill);
-        log.info("Parse took " + parseTimeSec + " seconds");
-    }
-
-
 }

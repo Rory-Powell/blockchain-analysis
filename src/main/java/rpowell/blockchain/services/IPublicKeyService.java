@@ -2,7 +2,7 @@ package rpowell.blockchain.services;
 
 import rpowell.blockchain.domain.PublicKey;
 
-public interface PublicKeyService {
+public interface IPublicKeyService {
 
     PublicKey findByKey(String key);
 

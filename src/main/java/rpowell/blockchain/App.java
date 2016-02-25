@@ -7,18 +7,20 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Import;
 import rpowell.blockchain.domain.PublicKey;
-import rpowell.blockchain.services.ParseService;
-import rpowell.blockchain.services.PublicKeyService;
+import rpowell.blockchain.services.IParseService;
+import rpowell.blockchain.services.IPublicKeyService;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 @Import(AppConfiguration.class)
 public class App implements CommandLineRunner {
 
     @Autowired
-    PublicKeyService pubKeyService;
+    IPublicKeyService pubKeyService;
 
     @Autowired
-    ParseService parseService;
+    IParseService parseService;
 
     public static void main(String[] args) throws IOException {
         SpringApplication.run(App.class, args);
@@ -30,14 +32,8 @@ public class App implements CommandLineRunner {
     public void run(String... args) throws Exception {
         log.info("Started Application");
 
-        PublicKey publicKey = new PublicKey("Test-key-1");
-        PublicKey publicKey2 = new PublicKey("Test-key-2");
-
-//        pubKeyService.saveKey(publicKey);
-//        pubKeyService.saveKey(publicKey2);
-
-        PublicKey publicKey1 = pubKeyService.findByKey("Test-key-1");
+        // Parse block files and stream write them to the DB
         pubKeyService.deleteAll();
-        PublicKey publicKey3 = pubKeyService.findByKey("Test-key-1");
+        parseService.parseBlockFiles();
     }
 }

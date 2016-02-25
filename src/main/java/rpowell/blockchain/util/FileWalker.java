@@ -30,6 +30,7 @@ public class FileWalker {
             // Walk the file path and discover any block files
             discoveredFiles = Files.walk(Paths.get(path))
                     .filter(Files::isRegularFile)
+                    .filter(f -> f.toFile().getName().endsWith(".dat"))
                     .map(Path::toString).map(File::new)
                     .collect(Collectors.toList());
 
