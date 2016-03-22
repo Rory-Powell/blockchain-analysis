@@ -12,12 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rpowell.blockchain.util.FileWalker;
-
 import java.io.File;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -30,6 +28,8 @@ public class ParseServiceImpl implements IParseService {
     private NetworkParameters networkParameters = new MainNetParams();
     private Context context = new Context(networkParameters);
 
+    private int blockCount = 0;
+
     public void parseBlockFiles() {
         this.parseBlockFiles(FileWalker.discoverFilesOnDefaultPath());
     }
@@ -37,76 +37,132 @@ public class ParseServiceImpl implements IParseService {
     public void parseBlockFiles(List<File> files) {
         BlockFileLoader blockFileLoader = new BlockFileLoader(networkParameters, files);
 
-        Set<Transaction> transactions = new HashSet<>();
         for (Block block : blockFileLoader) {
             log.info("Parsed block " + block.getHashAsString());
+            List<Transaction> blockTransactions = (mapTransactions(block.getTransactions()));
 
-            if (block.getTransactions() != null) {
-                // Map transactions in block to domain format
-                for (org.bitcoinj.core.Transaction blockTransaction : block.getTransactions()) {
-                    Transaction transaction = new Transaction();
-                    transaction.setInputs(extractInputsFromTransaction(blockTransaction));
-                    transaction.setOutputs(extractOutputsFromTransaction(blockTransaction));
-                    transactions.add(transaction);
-                }
+            for (Transaction transaction : blockTransactions) {
+                writePublicKeysToDB(extractLinkedInputs(transaction));
+            }
+
+            // Temporary limiter
+            blockCount++;
+            if (blockCount == 51726) {
+                break;
             }
         }
-        // Write public keys in transaction to database
-        writeTransactionsToDB(transactions);
     }
 
-    public void writeTransactionsToDB(Set<Transaction> transactions) {
-        Set<PublicKey> publicKeys = new HashSet<>();
-        for (Transaction transaction : transactions) {
-            Set<PublicKey> inputs = transaction.getInputs().stream()
-                    .map(PublicKey::new)
-                    .collect(Collectors.toSet());
+    /**
+     * Transform a list of bitcoinj transactions into domain format transactions.
+     * @param transactions  The bitcoinj transactions.
+     * @return              The domain transactions.
+     */
+    private List<Transaction> mapTransactions(List<org.bitcoinj.core.Transaction> transactions) {
+        List<Transaction> mappedTransactions = new ArrayList<>();
 
-            Set<PublicKey> outputs = transaction.getOutputs().stream()
-                    .map(PublicKey::new)
-                    .collect(Collectors.toSet());
+        if (transactions != null && !transactions.isEmpty()) {
+            for (org.bitcoinj.core.Transaction blockTransaction : transactions) {
 
-            for (PublicKey key : inputs) {
-                key.addOutputs(outputs);
+                // Create a domain transaction
+                Transaction transaction = new Transaction();
+                transaction.setInputs(extractInputsFromTransaction(blockTransaction));
+                transaction.setOutputs(extractOutputsFromTransaction(blockTransaction));
+
+                mappedTransactions.add(transaction);
             }
-
-            for (PublicKey key : outputs) {
-                key.addInputs(inputs);
-            }
-
-            // Only save inputs, outputs linked and will be saved in the same transaction
-            publicKeys.addAll(inputs);
         }
 
-        log.info("Preparing to save " + publicKeys.size() + " public keys");
-        // Save
-        publicKeyService.saveAllKeys(publicKeys);
+        return mappedTransactions;
+    }
+
+    private List<PublicKey> extractLinkedInputs(Transaction transaction) {
+        List<PublicKey> linkedInputs = new ArrayList<>();
+
+        // Extract the inputs, checking if any already exist
+        List<PublicKey> inputs = new ArrayList<>();
+        for (String key : transaction.getInputs()) {
+            PublicKey existingInput = publicKeyService.findByKey(key);
+
+            if (existingInput != null) {
+                inputs.add(existingInput);
+            } else {
+                inputs.add(new PublicKey(key));
+            }
+        }
+
+        // Extract the outputs, checking if any already exist
+        List<PublicKey> outputs = new ArrayList<>();
+        for (String key : transaction.getOutputs()) {
+            PublicKey existingOutput = publicKeyService.findByKey(key);
+
+            if (existingOutput != null) {
+                outputs.add(existingOutput);
+            } else {
+                outputs.add(new PublicKey(key));
+            }
+        }
+
+        // Link each input to each output
+        for (PublicKey input : inputs) {
+            for (PublicKey output : outputs) {
+                // Check for sending change back to original address, and negate it
+                if (!Objects.equals(input.getPublicKey(), output.getPublicKey())) {
+                    input.linkAddress(output);
+                }
+            }
+
+            linkedInputs.add(input);
+        }
+
+        return linkedInputs;
+    }
+
+    /**
+     * Write a public key to the database. This will also persist the linked
+     * keys and the relationship between the.
+     * @param publicKey The key to save.
+     */
+    private void writePublicKeyToDB(PublicKey publicKey) {
+        if (publicKey != null) {
+            publicKeyService.saveKey(publicKey);
+        }
+    }
+
+    /**
+     * Save a list of public keys to the database. This will also persist the linked
+     * keys and the relationship between them.
+     * @param publicKeys The keys to save.
+     */
+    private void writePublicKeysToDB(List<PublicKey> publicKeys) {
+        if (publicKeys != null && !publicKeys.isEmpty()) {
+            publicKeyService.saveAllKeys(publicKeys);
+        }
     }
 
     // Extract inputs from transaction.
-    private Set<String> extractInputsFromTransaction(org.bitcoinj.core.Transaction transaction) {
-        Set<String> inputs = new HashSet<>();
+    private List<String> extractInputsFromTransaction(org.bitcoinj.core.Transaction transaction) {
+        List<String> inputs = new ArrayList<>();
         for (TransactionInput input : transaction.getInputs()) {
             try {
                 List<ScriptChunk> chunks = input.getScriptSig().getChunks();
                 if (checkChunks(chunks)) {
                     if (input.isCoinBase()) {
                         inputs.add("COINBASE");
-
                     } else {
                         inputs.add(input.getFromAddress().toString());
                     }
                 }
             } catch (ScriptException e) {
-                log.error("ScriptException", e);
+                log.error("Script exception", e);
             }
         }
         return inputs;
     }
 
     // Extract outputs from a transaction.
-    private Set<String> extractOutputsFromTransaction(org.bitcoinj.core.Transaction transaction) {
-        Set<String> outputs = new HashSet<>();
+    private List<String> extractOutputsFromTransaction(org.bitcoinj.core.Transaction transaction) {
+        List<String> outputs = new ArrayList<>();
         for (TransactionOutput output : transaction.getOutputs()) {
             try {
                 outputs.add(output.getScriptPubKey()

@@ -2,7 +2,6 @@ package rpowell.blockchain.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,11 +13,11 @@ import java.util.stream.Collectors;
 // Class to walk the file system and discover files.
 public class FileWalker {
     private static final Logger log = LoggerFactory.getLogger(FileWalker.class);
-    public static final String DAT_PATH = "/home/rpowell/dev/projects/final-project/resources";
+    public static final String DEFAULT_PATH = "/home/rpowell/dev/projects/university/final-project/resources";
 
     // Search the default path for files
     public static List<File> discoverFilesOnDefaultPath() {
-        return discoverFilesOnPath(DAT_PATH);
+        return discoverFilesOnPath(DEFAULT_PATH);
     }
 
     // Search a given path for files

@@ -1,40 +1,34 @@
 package rpowell.blockchain;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Transaction {
 
     // The sender address
-    private Set<String> inputs = new HashSet<>();
+    private List<String> inputs = new ArrayList<>();
 
     // The receiver address
-    private Set<String> outputs = new HashSet<>();
+    private List<String> outputs = new ArrayList<>();
 
     public Transaction() {
     }
 
-    public void addInput(String input) {
-        this.inputs.add(input);
-    }
-
-    public void addOutput(String output) {
-        this.outputs.add(output);
-    }
-
-    public Set<String> getOutputs() {
+    public List<String> getOutputs() {
         return this.outputs;
     }
 
-    public Set<String> getInputs() {
+    public List<String> getInputs() {
         return this.inputs;
     }
 
-    public void setOutputs(Set<String> outputs) {
+    public void setOutputs(List<String> outputs) {
         this.outputs = outputs;
     }
 
-    public void setInputs(Set<String> inputs) {
+    public void setInputs(List<String> inputs) {
         this.inputs = inputs;
     }
 

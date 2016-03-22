@@ -6,12 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Import;
-import rpowell.blockchain.domain.PublicKey;
 import rpowell.blockchain.services.IParseService;
 import rpowell.blockchain.services.IPublicKeyService;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
 @Import(AppConfiguration.class)
 public class App implements CommandLineRunner {
