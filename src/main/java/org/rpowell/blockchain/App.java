@@ -1,23 +1,23 @@
-package rpowell.blockchain;
+package org.rpowell.blockchain;
 
+import org.rpowell.blockchain.services.IFetcherService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.context.annotation.Import;
-import rpowell.blockchain.services.IParseService;
-import rpowell.blockchain.services.IPublicKeyService;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.rpowell.blockchain.services.IParseService;
 import java.io.IOException;
 
-@Import(AppConfiguration.class)
+@SpringBootApplication
 public class App implements CommandLineRunner {
 
     @Autowired
-    IPublicKeyService pubKeyService;
+    private IParseService parseService;
 
     @Autowired
-    IParseService parseService;
+    private IFetcherService fetcherService;
 
     public static void main(String[] args) throws IOException {
         SpringApplication.run(App.class, args);
@@ -29,8 +29,7 @@ public class App implements CommandLineRunner {
     public void run(String... args) throws Exception {
         log.info("Started Application");
 
-        // Parse block files and stream write them to the DB
-        pubKeyService.deleteAll();
-        parseService.parseBlockFiles();
+        fetcherService.writeBlockchainToJSON();
+        parseService.writeJSONToDB();
     }
 }
