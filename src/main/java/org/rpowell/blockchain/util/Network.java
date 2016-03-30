@@ -22,13 +22,18 @@ public class Network {
 
     private static RestTemplate restTemplate = new RestTemplate();
 
-    public static Transaction getTransactionByIndexOrHash(String indexOrHash) {
-        return restTemplate.getForObject(URL + RAW_TRANSACTION + indexOrHash, Transaction.class);
-    }
-
     public static Block getBlockByhash(String hash) {
         log.info("Downloading block " + hash);
         return restTemplate.getForObject(URL + RAW_BLOCK + hash, Block.class);
+    }
+
+    public static LatestBlock getLatestBlock() {
+        log.info("Downloading latest information");
+        return restTemplate.getForObject(URL + LATEST_BLOCK, LatestBlock.class);
+    }
+
+    public static Transaction getTransactionByIndexOrHash(String indexOrHash) {
+        return restTemplate.getForObject(URL + RAW_TRANSACTION + indexOrHash, Transaction.class);
     }
 
     public static Block getBlockByIndex(long index) {
@@ -41,9 +46,5 @@ public class Network {
 
     public static Address getAddress(String address) {
         return restTemplate.getForObject(URL + RAW_ADDRESS + address, Address.class);
-    }
-
-    public static LatestBlock getLatestBlock() {
-        return restTemplate.getForObject(URL + LATEST_BLOCK, LatestBlock.class);
     }
 }

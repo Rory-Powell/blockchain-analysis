@@ -97,7 +97,9 @@ public class ParseServiceImpl implements IParseService {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
+                log.info("Initiating graph shutdown.... this may take quite a while.");
                 batchInserter.shutdown();
+                log.info("Graph is now shutdown and ready to use");
             }
         } );
     }
