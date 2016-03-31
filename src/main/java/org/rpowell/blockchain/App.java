@@ -29,7 +29,7 @@ public class App implements CommandLineRunner {
     public void run(String... args) throws Exception {
         log.info("Started Application");
 
-        fetcherService.writeBlockchainToJSON();
+//        fetcherService.writeBlockchainToJSON();
         parseService.writeJSONToDB();
     }
 }

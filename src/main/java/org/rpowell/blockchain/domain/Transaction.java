@@ -14,6 +14,7 @@ public class Transaction {
     Integer vin_sz;
     Integer vout_sz;
     long lock_time;
+    long time;
     Integer size;
     String relayed_by;
     Integer block_height;
@@ -21,6 +22,15 @@ public class Transaction {
     long tx_index;
     List<Input> inputs;
     List<Output> out;
+
+
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
+    }
 
     public boolean isDouble_spend() {
         return double_spend;

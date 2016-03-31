@@ -1,8 +1,7 @@
 package org.rpowell.blockchain.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.rpowell.blockchain.domain.Block;
-import org.rpowell.blockchain.domain.LatestBlock;
+import org.rpowell.blockchain.domain.*;
 import org.rpowell.blockchain.util.FileUtil;
 import org.rpowell.blockchain.util.Network;
 import org.rpowell.blockchain.util.StringConstants;
@@ -11,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -23,7 +23,8 @@ public class FetcherServiceImpl implements IFetcherService {
     private final String LINE_BREAK = "*******************************************************************************";
     private final String FILE_EXT = ".json";
     private final ObjectMapper mapper = new ObjectMapper();
-    int count = 0;
+    private int count = 0;
+    private boolean resume = false;
 
     // For use by spring
     protected FetcherServiceImpl() {}
@@ -47,7 +48,6 @@ public class FetcherServiceImpl implements IFetcherService {
 
         Block genesisBlock = Network.getBlockByhash(StringConstants.GENESIS_BLOCK);
 
-        // If there are no blocks on disk
         if (jsonFiles.isEmpty()) {
             log.info(LINE_BREAK);
             log.info("Starting blockchain download");
@@ -66,15 +66,17 @@ public class FetcherServiceImpl implements IFetcherService {
                 downloadBlocks(latestNetworkBlock, latestBlockOnDisk.getBlock_index());
             }
 
-            Block earliestBlockOnDisk = getEarliestBlockOnDisk(jsonFiles);
-            if (earliestBlockOnDisk.getBlock_index() > genesisBlock.getBlock_index()) {
-                count = 0;
-                log.info(LINE_BREAK);
-                log.info("Continuing blockchain history download. Feel free to cancel this process.");
-                log.info(LINE_BREAK);
+            if (resume) {
+                Block earliestBlockOnDisk = getEarliestBlockOnDisk(jsonFiles);
+                if (earliestBlockOnDisk.getBlock_index() > genesisBlock.getBlock_index()) {
+                    count = 0;
+                    log.info(LINE_BREAK);
+                    log.info("Continuing blockchain history download. Feel free to cancel this process.");
+                    log.info(LINE_BREAK);
 
-                Block previousBlock = Network.getBlockByhash(earliestBlockOnDisk.getPrev_block());
-                downloadBlocks(previousBlock, genesisBlock.getBlock_index());
+                    Block previousBlock = Network.getBlockByhash(earliestBlockOnDisk.getPrev_block());
+                    downloadBlocks(previousBlock, genesisBlock.getBlock_index());
+                }
             }
         }
     }
@@ -90,6 +92,8 @@ public class FetcherServiceImpl implements IFetcherService {
         while (startBlock.getBlock_index() > stopIndex) {
             try {
                 File newFile = new File(StringConstants.JSON_PATH + startBlock.getBlock_index() + FILE_EXT);
+
+                filterInvalidTransactions(startBlock);
 
                 mapper.writeValue(newFile, startBlock);
                 log.info("Writing file " + newFile.toString() + " Count: " + count);
@@ -107,6 +111,38 @@ public class FetcherServiceImpl implements IFetcherService {
                 }
             }
         }
+    }
+
+    /**
+     * Some blockchain data is lossy. Remove the transactions from the block that are missing information about
+     * the addresses of inputs / outputs. This may result in data loss.
+     *
+     * @param block The block to filter.
+     */
+    private void filterInvalidTransactions(Block block) {
+        List<Transaction> filteredTransactions = new ArrayList<>();
+
+        for (Transaction transaction : block.getTx()) {
+            boolean filterTransaction = false;
+
+            for (Input input : transaction.getInputs()) {
+                if (input.getPrev_out() == null || input.getPrev_out().getAddr() == null) {
+                    filterTransaction = true;
+                }
+            }
+
+            for (Output output : transaction.getOut()) {
+                if (output.getAddr() == null) {
+                    filterTransaction = true;
+                }
+            }
+
+            if (!filterTransaction) {
+                filteredTransactions.add(transaction);
+            }
+        }
+
+        block.setTx(filteredTransactions);
     }
 
     /**
