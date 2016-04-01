@@ -30,6 +30,6 @@ public class App implements CommandLineRunner {
         log.info("Started Application");
 
 //        fetcherService.writeBlockchainToJSON();
-        parseService.writeJSONToDB();
+//        parseService.writeJSONToDB();
     }
 }

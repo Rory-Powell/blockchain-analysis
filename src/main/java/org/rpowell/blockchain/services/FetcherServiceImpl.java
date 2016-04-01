@@ -35,7 +35,7 @@ public class FetcherServiceImpl implements IFetcherService {
         // Ensure directory exists
         File file = new File(StringConstants.JSON_PATH);
         if (!file.exists()) {
-            file.mkdir();
+            file.mkdirs();
         }
 
         // Retrieve files already on disk

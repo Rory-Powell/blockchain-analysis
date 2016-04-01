@@ -50,7 +50,7 @@ public class ParseServiceImpl implements IParseService {
                 int toIndex = i + persistenceThreshold;
 
                 if (toIndex > jsonFiles.size()) {
-                    fileLists.add(jsonFiles.subList(i, jsonFiles.size() - 1));
+                    fileLists.add(jsonFiles.subList(i, jsonFiles.size()));
                 } else {
                     fileLists.add(jsonFiles.subList(i, toIndex));
                 }
@@ -65,16 +65,18 @@ public class ParseServiceImpl implements IParseService {
                 registerShutdownHook(batchInserter);
 
                 int batchPersistCount = 0;
+                int batchSize;
                 for (File file : fileList) {
                     // Try for each block, to reduce any data loss.
                     try {
                         batchPersistCount++;
                         totalPersistCount++;
+                        batchSize = fileList.size();
 
                         Block block = mapper.readValue(file, Block.class);
 
                         log.info("Persisting block " + block.getHash());
-                        log.info("Count in current batch: " + batchPersistCount + "/" + persistenceThreshold);
+                        log.info("Count in current batch: " + batchPersistCount + "/" + batchSize);
                         log.info("Count in total: " + totalPersistCount + "/" + jsonFiles.size());
 
                         for (Transaction transaction : block.getTx()) {
@@ -174,7 +176,6 @@ public class ParseServiceImpl implements IParseService {
 
             // output deposits into the address
             batchInserter.createRelationship(txNode, addrNode, Relationships.DEPOSIT, outProps);
-            log.info("Persisting transaction " + transaction.getHash());
 
         }
 
