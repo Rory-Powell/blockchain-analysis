@@ -2,23 +2,21 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head lang="en">
 
-    <title>Home</title>
+    <title>Address</title>
 
     <!--/*/ <th:block th:include="fragments/include :: head"></th:block> /*/-->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js"
+            th:src="@{webjars/d3js/3.5.16/d3.min.js}"></script>
+
 </head>
+
 <body>
 
 <div class="container">
-
     <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
 
-    <div class="jumbotron">
-        <div class="row text-center">
-            <img src="../static/images/blockchain_logo_2.png" width="400"
-                 th:src="@{/images/blockchain_logo_2.png}"/>
-        </div>
-    </div>
-
 </div>
+
 </body>
 </html>

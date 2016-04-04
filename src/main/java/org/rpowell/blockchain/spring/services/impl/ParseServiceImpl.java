@@ -10,10 +10,9 @@ import org.rpowell.blockchain.domain.Block;
 import org.rpowell.blockchain.domain.Input;
 import org.rpowell.blockchain.domain.Output;
 import org.rpowell.blockchain.domain.Transaction;
-import org.rpowell.blockchain.graph.Labels;
-import org.rpowell.blockchain.graph.Relationships;
 import org.rpowell.blockchain.spring.services.IParseService;
 import org.rpowell.blockchain.util.FileUtil;
+import org.rpowell.blockchain.graph.GraphConstants;
 import org.rpowell.blockchain.util.StringConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +21,8 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+
+import static org.rpowell.blockchain.graph.GraphConstants.*;
 
 @Service
 public class ParseServiceImpl implements IParseService {
@@ -136,7 +137,7 @@ public class ParseServiceImpl implements IParseService {
             Long addrNode = addressIndex.get(input.getPrev_out().getAddr());
             if (addrNode == null) {
                 Map<String, Object> addressProperties = new HashMap<>();
-                addressProperties.put("Addr", input.getPrev_out().getAddr());
+                addressProperties.put(GraphConstants.Properties.ADDR, input.getPrev_out().getAddr());
 
                 addrNode = batchInserter.createNode(addressProperties, Labels.ADDRESS);
 

@@ -24,5 +24,8 @@ public class GraphController {
         return "addresses";
     }
 
-
+    @RequestMapping(value = "/address", method = RequestMethod.GET)
+    public String getAddress(Model model){
+        return "address";
+    }
 }

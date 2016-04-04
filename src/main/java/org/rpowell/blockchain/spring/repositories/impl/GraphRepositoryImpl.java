@@ -1,25 +1,25 @@
-package org.rpowell.blockchain.spring.repositories;
+package org.rpowell.blockchain.spring.repositories.impl;
 
 import org.apache.commons.io.FileUtils;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.ResourceIterator;
+import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-import org.rpowell.blockchain.domain.Address;
-import org.rpowell.blockchain.graph.Labels;
+import org.rpowell.blockchain.domain.*;
+import org.rpowell.blockchain.spring.repositories.IGraphRepository;
 import org.rpowell.blockchain.util.StringConstants;
 import org.springframework.stereotype.Repository;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.rpowell.blockchain.graph.GraphConstants.*;
+
 @Repository
-public class GraphRepository {
+public class GraphRepositoryImpl implements IGraphRepository {
 
     private GraphDatabaseService graphDb;
 
-    protected GraphRepository() {
+    protected GraphRepositoryImpl() {
         File dbPath = FileUtils.getFile(StringConstants.DB_PATH);
         File configPath = FileUtils.getFile(StringConstants.DB_PATH);
 
@@ -30,6 +30,21 @@ public class GraphRepository {
         registerShutdownHook(graphDb);
     }
 
+    /**
+     * Execute a cypher query against the neo4j database.
+     * @param query The query to execute.
+     * @return      The result.
+     */
+    public Result execute(String query) {
+        Result result;
+
+        try (Transaction tx = graphDb.beginTx()) {
+            result = graphDb.execute(query);
+            tx.success();
+        }
+
+        return result;
+    }
 
     /**
      * Get the stored node with an address label the supplied address hash.
@@ -56,7 +71,6 @@ public class GraphRepository {
 
         try (Transaction tx = graphDb.beginTx()) {
             try(ResourceIterator resourceIterator =  graphDb.findNodes(Labels.ADDRESS)) {
-
                 int limit = 100;
                 int count = 0;
                 while (resourceIterator.hasNext() && count < limit) {
