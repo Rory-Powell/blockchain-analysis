@@ -1,18 +1,19 @@
-package org.rpowell.blockchain.spring.services;
+package org.rpowell.blockchain.spring.services.impl;
 
 import org.rpowell.blockchain.domain.Address;
 import org.rpowell.blockchain.spring.repositories.GraphRepository;
+import org.rpowell.blockchain.spring.services.IGraphService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class GraphService implements IGraphService {
+public class GraphServiceImpl implements IGraphService {
 
     @Autowired
     private GraphRepository graphRepository;
 
-    protected GraphService() {}
+    protected GraphServiceImpl() {}
 
     public List<Address> getAllAddresses() {
        return graphRepository.getAllAddresses();

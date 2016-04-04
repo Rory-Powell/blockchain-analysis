@@ -57,7 +57,7 @@ public class GraphRepository {
         try (Transaction tx = graphDb.beginTx()) {
             try(ResourceIterator resourceIterator =  graphDb.findNodes(Labels.ADDRESS)) {
 
-                int limit = 50;
+                int limit = 100;
                 int count = 0;
                 while (resourceIterator.hasNext() && count < limit) {
                     Node addressNode = (Node) resourceIterator.next();

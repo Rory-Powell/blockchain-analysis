@@ -1,4 +1,4 @@
-package org.rpowell.blockchain.spring.services;
+package org.rpowell.blockchain.spring.services.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
@@ -12,6 +12,7 @@ import org.rpowell.blockchain.domain.Output;
 import org.rpowell.blockchain.domain.Transaction;
 import org.rpowell.blockchain.graph.Labels;
 import org.rpowell.blockchain.graph.Relationships;
+import org.rpowell.blockchain.spring.services.IParseService;
 import org.rpowell.blockchain.util.FileUtil;
 import org.rpowell.blockchain.util.StringConstants;
 import org.slf4j.Logger;

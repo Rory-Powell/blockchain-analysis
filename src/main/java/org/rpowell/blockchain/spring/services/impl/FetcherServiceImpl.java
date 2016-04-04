@@ -1,7 +1,8 @@
-package org.rpowell.blockchain.spring.services;
+package org.rpowell.blockchain.spring.services.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.rpowell.blockchain.domain.*;
+import org.rpowell.blockchain.spring.services.IFetcherService;
 import org.rpowell.blockchain.util.FileUtil;
 import org.rpowell.blockchain.util.Network;
 import org.rpowell.blockchain.util.StringConstants;

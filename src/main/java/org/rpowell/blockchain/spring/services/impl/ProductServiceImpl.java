@@ -1,6 +1,7 @@
-package org.rpowell.blockchain.spring.services;
+package org.rpowell.blockchain.spring.services.impl;
 
 import org.rpowell.blockchain.domain.Product;
+import org.rpowell.blockchain.spring.services.ProductService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
