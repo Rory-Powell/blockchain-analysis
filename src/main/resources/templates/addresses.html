@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+    <title>Addresses</title>
+    <!--/*/ <th:block th:include="fragments/include :: head"></th:block> /*/-->
+
+</head>
+<body>
+<div class="container">
+    <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+
+    <div th:if="${not #lists.isEmpty(addresses)}">
+        <h2>Addresses</h2>
+
+        <table class="table table-striped">
+            <tr>
+                <th>Address</th>
+                <th>View</th>
+            </tr>
+            <tr th:each="address : ${addresses}">
+                <td th:text="${address.address}">Address</td>
+                <td><a th:href="${ '/address/' + address.address}">View</a></td>
+            </tr>
+        </table>
+
+    </div>
+</div>
+
+</body>
+</html>

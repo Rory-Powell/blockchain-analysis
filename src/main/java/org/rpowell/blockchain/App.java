@@ -1,6 +1,7 @@
 package org.rpowell.blockchain;
 
 import org.rpowell.blockchain.spring.services.IFetcherService;
+import org.rpowell.blockchain.spring.services.IGraphService;
 import org.rpowell.blockchain.spring.services.IParseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,9 @@ public class App implements CommandLineRunner {
 	@Autowired
 	private IFetcherService fetcherService;
 
+	@Autowired
+	private IGraphService graphService;
+
 	public static void main(String[] args) throws IOException {
 		SpringApplication.run(App.class, args);
 	}
@@ -29,6 +33,8 @@ public class App implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		log.info("Started Application");
+
+		graphService.getAllAddresses();
 
 //        fetcherService.writeBlockchainToJSON();
 //        parseService.writeJSONToDB();

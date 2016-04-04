@@ -29,7 +29,6 @@ public class ParseServiceImpl implements IParseService {
     private final double SATOSHI = 0.00000001;
     private final ObjectMapper mapper = new ObjectMapper();
 
-    private GraphDatabaseService graphDb;
     private boolean isShutdown = false;
 
     private Map<String, Long> addressIndex = new HashMap<>();
@@ -207,19 +206,6 @@ public class ParseServiceImpl implements IParseService {
         return new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbPath)
                                             .loadPropertiesFromFile(configPath.toString())
                                             .newGraphDatabase();
-    }
-
-    /**
-     * Registers a shutdown hook;
-     * @param graphDb The graph database service to shutdown.
-     */
-    private void registerShutdownHook(final GraphDatabaseService graphDb) {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                graphDb.shutdown();
-            }
-        });
     }
 
     /**
