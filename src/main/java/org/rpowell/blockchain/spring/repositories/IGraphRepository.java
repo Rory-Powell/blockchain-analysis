@@ -5,6 +5,7 @@ import org.neo4j.graphdb.Result;
 import org.rpowell.blockchain.domain.Address;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IGraphRepository {
 
@@ -13,4 +14,12 @@ public interface IGraphRepository {
     Node getAddress(String hash);
 
     Result execute(String query);
+
+    Result execute(String query, Map<String, Object> parameters);
+
+    Map<String, Object> graph(String query);
+
+    Map<String, Object> graph(String query, Map<String, Object> parameters);
+
+
 }
