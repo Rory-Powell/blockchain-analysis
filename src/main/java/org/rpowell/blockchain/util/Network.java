@@ -1,9 +1,9 @@
 package org.rpowell.blockchain.util;
 
-import org.bitcoinj.core.Transaction;
 import org.rpowell.blockchain.domain.Address;
 import org.rpowell.blockchain.domain.Block;
 import org.rpowell.blockchain.domain.LatestBlock;
+import org.rpowell.blockchain.domain.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
