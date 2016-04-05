@@ -6,40 +6,41 @@
 <body>
 
 <div class="container">
-
     <div th:fragment="header">
-        <nav class="navbar navbar-inverse">
-            <div class="container-fluid">
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
                 <div class="navbar-header">
 
+                    <!-- Home -->
                     <a class="navbar-brand navbar-lg" href="#" th:href="@{/}">
                         <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
                     </a>
 
+                    <!-- Links -->
                     <ul class="nav navbar-nav">
-                        <li><a href="#" th:href="@{/products}">Products</a></li>
                         <li><a href="#" th:href="@{/addresses}">Addresses</a></li>
                     </ul>
                 </div>
 
-                <!-- Search Bar -->
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <!-- Search -->
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6 col-sm-offset-3">
+                            <div id="imaginary_container">
+                                <div class="input-group stylish-input-group">
+                                    <input type="text" class="form-control"  placeholder="e.g. 1JLRXD8rjRgQtTS9MvfQALfHgGWau9L9ky" />
 
-                    <ul class="nav navbar-nav navbar-right">
-                        <form class="navbar-form navbar-left" role="search">
-                            <!-- Search panel-->
-                            <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Search"/>
+                                    <span class="input-group-addon">
+                                        <button type="submit">
+                                            <span class="glyphicon glyphicon-search"></span>
+                                        </button>
+                                    </span>
+                                </div>
                             </div>
-
-                            <!--Submit button -->
-                            <button type="submit" class="btn btn-default" aria-label="Left Align">
-                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                                Search
-                            </button>
-                        </form>
-                    </ul>
+                        </div>
+                    </div>
                 </div>
+
             </div>
         </nav>
     </div>

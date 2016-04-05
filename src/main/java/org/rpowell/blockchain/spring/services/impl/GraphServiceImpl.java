@@ -23,6 +23,6 @@ public class GraphServiceImpl implements IGraphService {
     }
 
     public Map<String, Object> graph(String address, int depth) {
-        return graphRepository.graph(getAddressQuery(), getAddressQueryParams(address, depth));
+        return graphRepository.graph(getAddressQuery(address, depth));
     }
 }

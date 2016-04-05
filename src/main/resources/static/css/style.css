@@ -1,0 +1,54 @@
+html,body{
+	height: 100%;
+	background: #E8ECED;
+}
+
+#holder {
+	min-height: 100%;
+	position:relative;
+}
+
+#body {
+	padding-bottom: 100px;
+	padding-top: 70px;
+	background: #E8ECED;
+}
+
+/* Footer section */
+.footer{
+	left: 0;
+	bottom: 0;
+	position: absolute;
+	height: 100px;
+	width: 100%;
+	overflow:hidden;
+	background: #424242;
+}
+.footer i.fa{
+	padding-left: 50px;
+	right: 50px;
+	color: #bbbbbb;
+	margin-top: 30px;
+}
+.footer i.fa:hover{
+	color: #FFFFFF;
+}
+
+/* Search section */
+#imaginary_container{
+	width: 425px;
+	margin-top:8px;
+}
+.stylish-input-group .input-group-addon{
+	background: white !important;
+}
+.stylish-input-group .form-control{
+	border-right:0;
+	box-shadow:0 0 0;
+	border-color:#ccc;
+}
+.stylish-input-group button{
+	border:0;
+	background:transparent;
+}
+

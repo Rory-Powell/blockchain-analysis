@@ -4,10 +4,10 @@ import org.apache.commons.io.FileUtils;
 import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-import org.neo4j.kernel.GraphDatabaseAPI;
-import org.neo4j.server.WrappingNeoServerBootstrapper;
-import org.neo4j.server.configuration.Configurator;
-import org.neo4j.server.configuration.ServerConfigurator;
+//import org.neo4j.kernel.GraphDatabaseAPI;
+//import org.neo4j.server.WrappingNeoServerBootstrapper;
+//import org.neo4j.server.configuration.Configurator;
+//import org.neo4j.server.configuration.ServerConfigurator;
 import org.rpowell.blockchain.domain.*;
 import org.rpowell.blockchain.graph.GraphConstants;
 import org.rpowell.blockchain.spring.repositories.IGraphRepository;
@@ -26,52 +26,38 @@ public class GraphRepositoryImpl implements IGraphRepository {
     private static final Logger log = LoggerFactory.getLogger(GraphRepositoryImpl.class);
 
     private GraphDatabaseService graphDb;
-    private WrappingNeoServerBootstrapper serverBootstrapper;
+//    private WrappingNeoServerBootstrapper serverBootstrapper;
 
     protected GraphRepositoryImpl() {
         File dbPath = FileUtils.getFile(StringConstants.DB_PATH);
         File configPath = FileUtils.getFile(StringConstants.DB_PATH);
 
-        // Get an embedded database
-        graphDb = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbPath)
-                                            .loadPropertiesFromFile(configPath.toString())
-                                            .newGraphDatabase();
-
-        registerShutdownHook(graphDb);
+//        // Get an embedded database
+//        graphDb = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbPath)
+//                                            .loadPropertiesFromFile(configPath.toString())
+//                                            .newGraphDatabase();
+//
+//        registerShutdownHook(graphDb);
 
         // Start the db in server mode - For graph queries
 //        connectAndStartBootstrapper(graphDb); TODO - Investigate if this is still possible
     }
 
+
     public Map<String, Object> graph(String query) {
-        return toD3Format(query, Collections.<String,Object>emptyMap());
-    }
-
-    @Override
-    public Map<String, Object> graph(String query, Map<String, Object> parameters) {
-        return toD3Format(query, parameters);
-    }
-
-    /**
-     * Execute a cypher query against the neo4j database.
-     * @param query The query to execute.
-     * @return      The result.
-     */
-    public Result execute(String query) {
-        return execute(query, Collections.<String,Object>emptyMap());
+        return toD3Format(query);
     }
 
     /**
      * Execute a cypher query against the neo4j database.
      * @param query         The query to execute.
-     * @param parameters    The query parameters.
      * @return              The result.
      */
-    public Result execute(String query, Map<String, Object> parameters) {
+    public Result execute(String query) {
         Result result;
 
         try (Transaction tx = graphDb.beginTx()) {
-            result = graphDb.execute(query, parameters);
+            result = graphDb.execute(query);
             tx.success();
         }
 
@@ -123,13 +109,13 @@ public class GraphRepositoryImpl implements IGraphRepository {
     }
 
     // TODO - Modify this code to work with blockchain
-    private Map<String, Object> toD3Format(String query, Map<String, Object> params) {
+    private Map<String, Object> toD3Format(String query) {
         try(Transaction tx = graphDb.beginTx()) {
 
             List<Map<String,Object>> nodes = new ArrayList<>();
             List<Map<String,Object>> relationships = new ArrayList<>();
 
-            try (Result result = execute(query, params)) {
+            try (Result result = execute(query)) {
 
                 int i=0;
                 while (result.hasNext()) {

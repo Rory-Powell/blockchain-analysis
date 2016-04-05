@@ -7,25 +7,29 @@
 
 </head>
 <body>
-<div class="container">
-    <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+    <div id="holder">
+        <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+        <div id="body">
 
-    <div th:if="${not #lists.isEmpty(addresses)}">
-        <h2>Addresses</h2>
+            <div class="container">
 
-        <table class="table table-striped">
-            <tr>
-                <th>Address</th>
-                <th>View</th>
-            </tr>
-            <tr th:each="address : ${addresses}">
-                <td th:text="${address.address}">Address</td>
-                <td><a th:href="${ '/address/' + address.address}">View</a></td>
-            </tr>
-        </table>
+                <div th:if="${not #lists.isEmpty(addresses)}">
+                    <h2>Addresses</h2>
 
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Address</th>
+                            <th>View</th>
+                        </tr>
+                        <tr th:each="address : ${addresses}">
+                            <td th:text="${address.address}">Address</td>
+                            <td><a th:href="${ '/address/' + address.address}">View</a></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!--/*/ <th:block th:include="fragments/footer :: footer"></th:block> /*/-->
     </div>
-</div>
-
 </body>
 </html>

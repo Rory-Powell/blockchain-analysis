@@ -15,11 +15,6 @@ public interface IGraphRepository {
 
     Result execute(String query);
 
-    Result execute(String query, Map<String, Object> parameters);
-
     Map<String, Object> graph(String query);
-
-    Map<String, Object> graph(String query, Map<String, Object> parameters);
-
 
 }
