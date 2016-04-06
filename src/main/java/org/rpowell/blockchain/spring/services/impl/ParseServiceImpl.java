@@ -12,7 +12,6 @@ import org.rpowell.blockchain.domain.Output;
 import org.rpowell.blockchain.domain.Transaction;
 import org.rpowell.blockchain.spring.services.IParseService;
 import org.rpowell.blockchain.util.FileUtil;
-import org.rpowell.blockchain.graph.GraphConstants;
 import org.rpowell.blockchain.util.StringConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,9 +115,9 @@ public class ParseServiceImpl implements IParseService {
         long walletNode;
         Map<String, Object> txProps = new HashMap<>();
 
-        txProps.put("Index", transaction.getTx_index());
-        txProps.put("Hash", transaction.getHash());
-        txProps.put("Timestamp", transaction.getTime());
+        txProps.put(Props.INDEX, transaction.getTx_index());
+        txProps.put(Props.HASH, transaction.getHash());
+        txProps.put(Props.TIMESTAMP, transaction.getTime());
 
         txNode = batchInserter.createNode(txProps, Labels.TRANSACTION);
 
@@ -137,17 +136,16 @@ public class ParseServiceImpl implements IParseService {
             Long addrNode = addressIndex.get(input.getPrev_out().getAddr());
             if (addrNode == null) {
                 Map<String, Object> addressProperties = new HashMap<>();
-                addressProperties.put(GraphConstants.Properties.ADDR, input.getPrev_out().getAddr());
+                addressProperties.put(Props.ADDR, input.getPrev_out().getAddr());
 
                 addrNode = batchInserter.createNode(addressProperties, Labels.ADDRESS);
 
                 addressIndex.put(input.getPrev_out().getAddr(), addrNode);
             }
 
-
             Map<String, Object> inProps = new HashMap<>();
-            inProps.put("Amount", ((double) input.getPrev_out().getValue() * SATOSHI));
-            inProps.put("FromTxIndex", input.getPrev_out().getTx_index());
+            inProps.put(Props.AMOUNT, ((double) input.getPrev_out().getValue() * SATOSHI));
+            inProps.put(Props.FROM_TX_INDEX, input.getPrev_out().getTx_index());
 
             // input withdraws from the address
             batchInserter.createRelationship(addrNode, txNode, Relationships.WITHDRAW, inProps);
@@ -163,14 +161,14 @@ public class ParseServiceImpl implements IParseService {
         {
             Map<String, Object> outProps = new HashMap<>();
 
-            outProps.put("Amount", ((double) out.getValue() * SATOSHI));
-            outProps.put("OutputNum", out.getN());
-            outProps.put("TxIndex", transaction.getTx_index());
+            outProps.put(Props.AMOUNT, ((double) out.getValue() * SATOSHI));
+            outProps.put(Props.OUTPUT_NUM, out.getN());
+            outProps.put(Props.TX_INDEX, transaction.getTx_index());
 
             Long addrNode = addressIndex.get(out.getAddr());
             if (addrNode == null) {
                 Map<String, Object> addrProps = new HashMap<>();
-                addrProps.put("Addr", out.getAddr());
+                addrProps.put(Props.ADDR, out.getAddr());
                 addrNode = batchInserter.createNode(addrProps, Labels.ADDRESS);
 
                 addressIndex.put(out.getAddr(), addrNode);

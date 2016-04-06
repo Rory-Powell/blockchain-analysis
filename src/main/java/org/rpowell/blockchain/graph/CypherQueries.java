@@ -6,8 +6,8 @@ public class CypherQueries {
 
     public static String getAddressQuery(String address, int depth) {
         return  "MATCH (n:" + Labels.ADDRESS + ") " +
-                "WHERE n." + Properties.ADDR + " = '" + address + "' " +
+                "WHERE n." + Props.ADDR + " = '" + address + "' " +
                 "OPTIONAL MATCH path=n-[*1.." + depth + "]-(c) " +
-                "RETURN path";
+                "RETURN path LIMIT 1000";
     }
 }

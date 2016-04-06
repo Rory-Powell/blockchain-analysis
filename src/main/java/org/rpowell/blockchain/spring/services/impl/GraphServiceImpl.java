@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static org.rpowell.blockchain.graph.CypherQueries.*;
-
 @Service
 public class GraphServiceImpl implements IGraphService {
 
@@ -20,9 +18,5 @@ public class GraphServiceImpl implements IGraphService {
 
     public List<Address> getAllAddresses() {
        return graphRepository.getAllAddresses();
-    }
-
-    public Map<String, Object> graph(String address, int depth) {
-        return graphRepository.graph(getAddressQuery(address, depth));
     }
 }

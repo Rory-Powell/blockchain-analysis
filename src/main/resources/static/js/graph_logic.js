@@ -9,13 +9,14 @@ function dragstart(d) {
 }
 
 function draw_forced_directed(data){
+
     //Creating graph object
     var nodes=[], links=[];
     data.results[0].data.forEach(function (row) {
         row.graph.nodes.forEach(function (n)
         {
             if (idIndex(nodes,n.id) == null)
-                nodes.push({id:n.id,label:n.labels[0],title:n.properties.name});
+                nodes.push({id:n.id, label:n.labels[0], title:n.properties.name});
         });
         links = links.concat( row.graph.relationships.map(function(r) {
             return {source:idIndex(nodes,r.startNode),target:idIndex(nodes,r.endNode),type:r.type, value:1};
@@ -26,15 +27,15 @@ function draw_forced_directed(data){
 
 
     // force layout setup
-    var width = 1800, height = 800;
+    var width = 1100, height = 800;
     var radius = 6;
 
     var fill = d3.scale.category20();
 
     var force = d3.layout.force()
-        .gravity(.90)
+        .gravity(1.0)
         .charge(-300)
-        .linkDistance(120)
+        .linkDistance(100)
         .size([width, height]);
 
     var svg = d3.select("#graph").append("svg")
@@ -60,12 +61,10 @@ function draw_forced_directed(data){
     var node = svg.selectAll(".node")
         .data(graph.nodes).enter()
         .append("circle")
-        .attr("class", function (d) { return "node "+d.label })
+        .attr("class", function (d) { return "node " + d.label })
         .attr("r", radius)
         .attr("fill", function (d){return get_color[d.label]})
         .call(drag);
-
-
 
     // html title attribute for title node-attribute
     node.append("title")
@@ -82,8 +81,5 @@ function draw_forced_directed(data){
 
         node.attr("cx", function(d) { return d.x; })
             .attr("cy", function(d) { return d.y; });
-
-        //node.attr("cx", function(d) { return d.x = Math.max(radius, Math.min(width - radius, d.x)); })
-        //    .attr("cy", function(d) { return d.y = Math.max(radius, Math.min(height - radius, d.y)); });
     });
 }

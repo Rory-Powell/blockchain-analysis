@@ -24,10 +24,23 @@ public class GraphConstants {
     /**
      * Property names for nodes / relationships
      */
-    public static class Properties {
+    public static class Props {
 
+        // Transaction properties
+        public static String INDEX = "Index";
+        public static String HASH = "Hash";
+        public static String TIMESTAMP = "Timestamp";
+
+        // Address properties
         public static String ADDR = "Addr";
+        public static String AMOUNT = "Amount";
 
+        // Input
+        public static String FROM_TX_INDEX = "FromTxIndex";
+
+        // Output
+        public static String OUTPUT_NUM = "OutputNum";
+        public static String TX_INDEX = "TxIndex";
     }
 
     /**

@@ -6,54 +6,55 @@
 
     <!--/*/ <th:block th:include="fragments/include :: head"></th:block> /*/-->
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js"
-            th:src="@{webjars/d3js/3.5.16/d3.min.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js"></script>
 
     <script src="../static/js/graph_logic.js" th:src="@{/js/graph_logic.js}"></script>
     <script src="../static/js/graph_logic_bounded.js" th:src="@{/js/graph_logic_bounded.js}"></script>
-
-    <!-- Query Neo4j -->
-    <script type="text/javascript">
-        var post_request = {
-            "statements": [
-                {
-                    "statement": "MATCH (n:Address) WHERE n.Addr = '1ByMhDLywwXqdqBghb5MuA4Jy8KM5R4d3V' OPTIONAL MATCH path=n-[*1..4]-(c) RETURN path LIMIT 2000",
-                    "resultDataContents": [
-                        "graph"
-                    ]
-                }
-            ]
-        }
-
-        $.ajax({
-            type: "POST",
-            accept: "application/json",
-            contentType:"application/json; charset=utf-8",
-            url: "http://localhost:7474/db/data/transaction/commit",
-            headers: {"Authorization":"Basic bmVvNGo6YmxvY2tjaGFpbg=="},
-            data: JSON.stringify(post_request),
-            success: function(data){
-                draw_forced_directed(data);
-            },
-            failure: function(msg){console.log("failed")}
-        });
-    </script>
+    <script src="../static/js/ajaxCalls.js" th:src="@{/js/ajaxCalls.js}"></script>
 
 </head>
 
 <body>
 
 <div id="holder">
+
     <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
-    <div id="body">
 
-        <div id="graph" align="center">
-
-        </div>
-
+    <div id="graph" align="center">
     </div>
+
+    <div id="body">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading" id="address" th:text="${address}"></div>
+                    <table id="results" class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var address = document.getElementById("address").textContent;
+        drawGraph(address)
+    </script>
+
     <!--/*/ <th:block th:include="fragments/footer :: footer"></th:block> /*/-->
 </div>
+
+<style type="text/css">
+    .node { stroke: #222; stroke-width: 0.5px; }
+    .node.actor { fill: #888; }
+    .node.movie { fill: #BBB; }
+    .link { stroke: #999; stroke-opacity: .6; stroke-width: 1px; }
+</style>
 
 </body>
 </html>
