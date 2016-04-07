@@ -2,10 +2,11 @@ package org.rpowell.blockchain.spring.services.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.rpowell.blockchain.domain.*;
+import org.rpowell.blockchain.shared.FileComparator;
 import org.rpowell.blockchain.spring.services.IFetcherService;
-import org.rpowell.blockchain.util.FileUtil;
+import org.rpowell.blockchain.shared.FileUtil;
 import org.rpowell.blockchain.network.Network;
-import org.rpowell.blockchain.util.StringConstants;
+import org.rpowell.blockchain.shared.StringConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,10 +21,10 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class FetcherServiceImpl implements IFetcherService {
 
+    public static Block latestBlockOnDisk;
+
     private static final Logger log = LoggerFactory.getLogger(FetcherServiceImpl.class);
 
-    private final String LINE_BREAK = "*******************************************************************************";
-    private final String FILE_EXT = ".json";
     private final ObjectMapper mapper = new ObjectMapper();
     private int count = 0;
     private boolean resume = false;
@@ -42,7 +43,9 @@ public class FetcherServiceImpl implements IFetcherService {
 
         // Retrieve files already on disk
         List<File> jsonFiles = FileUtil.getFolderContents(StringConstants.JSON_PATH);
-        Collections.sort(jsonFiles);
+
+        // Sort the list by numeric file name
+        Collections.sort(jsonFiles, new FileComparator(StringConstants.JSON_FILE_EXT));
 
         // Retrieve the latest block on the blockchain
         LatestBlock latestBlock = Network.getLatestBlock();
@@ -51,17 +54,18 @@ public class FetcherServiceImpl implements IFetcherService {
         Block genesisBlock = Network.getBlockByhash(StringConstants.GENESIS_BLOCK);
 
         if (jsonFiles.isEmpty()) {
-            log.info(LINE_BREAK);
+            log.info(StringConstants.LINE_BREAK);
             log.info("Starting blockchain download");
-            log.info(LINE_BREAK);
+            log.info(StringConstants.LINE_BREAK);
 
             downloadBlocks(latestNetworkBlock, genesisBlock.getBlock_index());
         } else {
-            log.info(LINE_BREAK);
+            log.info(StringConstants.LINE_BREAK);
             log.info("Downloading new blocks. Please let this process complete.");
-            log.info(LINE_BREAK);
+            log.info(StringConstants.LINE_BREAK);
 
-            Block latestBlockOnDisk = getLatestBlockOnDisk(jsonFiles);
+            latestBlockOnDisk = getLatestBlockOnDisk(jsonFiles);
+
             if (latestBlock.getBlock_index() == latestBlockOnDisk.getBlock_index()) {
                 log.info("Already up to date.");
             } else {
@@ -72,9 +76,9 @@ public class FetcherServiceImpl implements IFetcherService {
                 Block earliestBlockOnDisk = getEarliestBlockOnDisk(jsonFiles);
                 if (earliestBlockOnDisk.getBlock_index() > genesisBlock.getBlock_index()) {
                     count = 0;
-                    log.info(LINE_BREAK);
+                    log.info(StringConstants.LINE_BREAK);
                     log.info("Continuing blockchain history download. Feel free to cancel this process.");
-                    log.info(LINE_BREAK);
+                    log.info(StringConstants.LINE_BREAK);
 
                     Block previousBlock = Network.getBlockByhash(earliestBlockOnDisk.getPrev_block());
                     downloadBlocks(previousBlock, genesisBlock.getBlock_index());
@@ -93,12 +97,16 @@ public class FetcherServiceImpl implements IFetcherService {
 
         while (startBlock.getBlock_index() > stopIndex) {
             try {
-                File newFile = new File(StringConstants.JSON_PATH + startBlock.getBlock_index() + FILE_EXT);
+                long index = startBlock.getBlock_index();
+                File newFile = new File(StringConstants.JSON_PATH + index + StringConstants.JSON_FILE_EXT);
 
                 filterInvalidTransactions(startBlock);
 
                 mapper.writeValue(newFile, startBlock);
-                log.info("Writing file " + newFile.toString() + " Count: " + count);
+                log.info("Writing file " + newFile.toString());
+                log.info("Blocks downloaded: " + count);
+                log.info("Remaining Blocks: " + (index - stopIndex));
+                log.info(StringConstants.LINE_BREAK);
 
                 startBlock = Network.getBlockByhash(startBlock.getPrev_block());
 

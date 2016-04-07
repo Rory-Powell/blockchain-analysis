@@ -2,17 +2,16 @@ package org.rpowell.blockchain.spring.services.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 import org.rpowell.blockchain.domain.Block;
 import org.rpowell.blockchain.domain.Input;
 import org.rpowell.blockchain.domain.Output;
 import org.rpowell.blockchain.domain.Transaction;
+import org.rpowell.blockchain.shared.FileComparator;
 import org.rpowell.blockchain.spring.services.IParseService;
-import org.rpowell.blockchain.util.FileUtil;
-import org.rpowell.blockchain.util.StringConstants;
+import org.rpowell.blockchain.shared.FileUtil;
+import org.rpowell.blockchain.shared.StringConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -41,19 +40,41 @@ public class ParseServiceImpl implements IParseService {
         BatchInserter batchInserter = null;
         try {
             List<File> jsonFiles = FileUtil.getFolderContents(StringConstants.JSON_PATH);
-            Collections.sort(jsonFiles); // Sort the files from earliest to latest
+            Collections.sort(jsonFiles, new FileComparator(StringConstants.JSON_FILE_EXT)); // Sort the files from earliest to latest
+
+            List<File> nonPersistedFiles;
+
+            // If there have been blocks previously downloaded / persisted - get the new ones
+            if (FetcherServiceImpl.latestBlockOnDisk != null) {
+                // Get the previously stored latest block on disk
+                int latestBlockIndex = (int) FetcherServiceImpl.latestBlockOnDisk.getBlock_index();
+
+                // Find the index of that block (index in the list, not the index in the blockchain)
+                int fromIndex = -1;
+                for (int i = 0; i < jsonFiles.size(); i++) {
+                    File file = jsonFiles.get(i);
+                    if (file.getName().substring(0, file.getName().length() - StringConstants.JSON_FILE_EXT.length()).equals(Integer.toString(latestBlockIndex))) {
+                        fromIndex = i;
+                        break; // Found it
+                    }
+                }
+
+                nonPersistedFiles = jsonFiles.subList(fromIndex + 1, jsonFiles.size());
+            } else {
+                nonPersistedFiles = jsonFiles;
+            }
 
             List<List<File>> fileLists = new ArrayList<>();
 
             // Persist a predefined number of block to the database at a time
             int persistenceThreshold = 2000;
-            for (int i = 0; i < jsonFiles.size(); i = i + persistenceThreshold) {
+            for (int i = 0; i < nonPersistedFiles.size(); i = i + persistenceThreshold) {
                 int toIndex = i + persistenceThreshold;
 
-                if (toIndex > jsonFiles.size()) {
-                    fileLists.add(jsonFiles.subList(i, jsonFiles.size()));
+                if (toIndex > nonPersistedFiles.size()) {
+                    fileLists.add(nonPersistedFiles.subList(i, nonPersistedFiles.size()));
                 } else {
-                    fileLists.add(jsonFiles.subList(i, toIndex));
+                    fileLists.add(nonPersistedFiles.subList(i, toIndex));
                 }
             }
 
@@ -78,7 +99,7 @@ public class ParseServiceImpl implements IParseService {
 
                         log.info("Persisting block " + block.getHash());
                         log.info("Count in current batch: " + batchPersistCount + "/" + batchSize);
-                        log.info("Count in total: " + totalPersistCount + "/" + jsonFiles.size());
+                        log.info("Count in total: " + totalPersistCount + "/" + nonPersistedFiles.size());
 
                         for (Transaction transaction : block.getTx()) {
                             storeTransaction(transaction, batchInserter);
@@ -96,7 +117,7 @@ public class ParseServiceImpl implements IParseService {
             log.error("Error writing to database");
         } finally {
             // Always ensure inserter is shutdown
-            if(!isShutdown) {
+            if(!isShutdown && batchInserter != null) {
                 writeBatch(batchInserter);
             }
         }
@@ -197,15 +218,6 @@ public class ParseServiceImpl implements IParseService {
         BatchInserter inserter = BatchInserters.inserter(dbPath, config);
         isShutdown = false; // Inserter retrieved successfully, signal active
         return inserter;
-    }
-
-    private GraphDatabaseService getGraphDatabaseService() {
-        File dbPath = FileUtils.getFile(StringConstants.DB_PATH);
-        File configPath = FileUtils.getFile(StringConstants.DB_PATH);
-
-        return new GraphDatabaseFactory().newEmbeddedDatabaseBuilder(dbPath)
-                                            .loadPropertiesFromFile(configPath.toString())
-                                            .newGraphDatabase();
     }
 
     /**

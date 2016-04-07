@@ -1,4 +1,4 @@
-package org.rpowell.blockchain.util;
+package org.rpowell.blockchain.shared;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.CanReadFileFilter;
