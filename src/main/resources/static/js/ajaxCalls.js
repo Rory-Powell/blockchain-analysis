@@ -16,7 +16,7 @@ function drawGraph(address) {
         type: "POST",
         accept: "application/json",
         contentType:"application/json; charset=utf-8",
-        url: "http://94.195.117.215:7474/db/data/transaction/commit",
+        url: "http://localhost:7474/db/data/transaction/commit",
         headers: {"Authorization":"Basic bmVvNGo6YmxvY2tjaGFpbg=="},
         data: JSON.stringify(post_request),
         success: function(data){
