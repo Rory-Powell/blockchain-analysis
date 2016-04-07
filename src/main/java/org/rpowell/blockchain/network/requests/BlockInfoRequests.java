@@ -1,4 +1,4 @@
-package org.rpowell.blockchain.network;
+package org.rpowell.blockchain.network.requests;
 
 import org.rpowell.blockchain.domain.Address;
 import org.rpowell.blockchain.domain.Block;
@@ -7,19 +7,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
 
-public class Network {
+public class BlockInfoRequests {
 
-    private static Logger log = LoggerFactory.getLogger(Network.class);
+    private static Logger log = LoggerFactory.getLogger(BlockInfoRequests.class);
 
-    private static final String URI = "https://blockchain.info/";
-
-    private static final String RAW_TRANSACTION = "rawtx/";
     private static final String RAW_BLOCK = "rawblock/";
     private static final String RAW_ADDRESS = "rawaddr/";
-
     private static final String LATEST_BLOCK = "latestblock";
 
+    private static final String URI = "https://blockchain.info/";
     private static RestTemplate restTemplate = new RestTemplate();
+
 
     public static Block getBlockByhash(String hash) {
         log.info("Downloading block " + hash);

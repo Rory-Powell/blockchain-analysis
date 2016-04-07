@@ -64,6 +64,11 @@
 			<artifactId>font-awesome</artifactId>
 			<version>4.5.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>animate.css</artifactId>
+			<version>3.2.0</version>
+		</dependency>
 
 
 		<!--Apache common io-->

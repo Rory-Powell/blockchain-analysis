@@ -1,14 +1,14 @@
-package org.rpowell.blockchain.network;
+package org.rpowell.blockchain.network.requests;
 
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
 /**
- *
+ *  Rest requests against the local neo4j database.
  */
 public class GraphRequests {
 
-    private static String SERVER_ROOT_URI = "http://localhost:7474/db/data/transaction/commit";
+    private static final String URI = "http://localhost:7474/db/data/transaction/commit";
     private static RestTemplate restTemplate = new RestTemplate();
     private static HttpHeaders headers = new HttpHeaders();
 
@@ -21,8 +21,7 @@ public class GraphRequests {
         String body = "{\"statements\" : [ {\"statement\" : \"" + query + "\"} ]}";
 
         HttpEntity<String> entity = new HttpEntity<>(body, headers);
-        Object response = restTemplate.exchange(SERVER_ROOT_URI, HttpMethod.GET, entity, String.class);
 
-        return restTemplate.exchange(SERVER_ROOT_URI, HttpMethod.GET, entity, responseType);
+        return restTemplate.exchange(URI, HttpMethod.POST, entity, responseType);
     }
 }

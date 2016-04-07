@@ -1,5 +1,6 @@
 package org.rpowell.blockchain.spring.controllers;
 
+import org.rpowell.blockchain.domain.Address;
 import org.rpowell.blockchain.spring.services.IGraphService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @Controller
 public class GraphController {
@@ -42,8 +44,11 @@ public class GraphController {
     }
 
     @RequestMapping("address/{id}")
-    public String getAddress(@PathVariable String id, Model model){
+    public String getAddress(@PathVariable String id, Model model) {
         model.addAttribute("address", id);
+        List<Address> associatedAddresses = graphService.getAssociatedAddresses(id);
+        model.addAttribute("associated", associatedAddresses);
+        model.addAttribute("associatedCount", associatedAddresses.size());
         return "address";
     }
 

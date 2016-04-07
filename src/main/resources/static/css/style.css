@@ -55,3 +55,19 @@ html,body{
 	background:transparent;
 }
 
+.blockInfoHeader {
+	font-weight: bold;
+	font-size: 18px;
+}
+
+td.content {
+	position: relative;
+}
+div.over {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: red;
+}

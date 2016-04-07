@@ -1,0 +1,39 @@
+.tile_count {
+    margin-bottom: 20px;
+    margin-top: 20px;
+    alignment: center;
+}
+.tile_count div:first-child .left {
+    border: 0;
+}
+.tile_count .tile_stats_count {
+    border-left: 0px solid #333;
+    padding: 0;
+}
+.tile_stats_count .left {
+    width: 15%;
+    float: left;
+    height: 65px;
+    border-left: 2px solid #ADB2B5;
+    margin-top: 10px;
+}
+.tile_stats_count .right {
+    padding-left: 10px;
+    height: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.tile_stats_count .right span {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.tile_stats_count .count {
+    font-size: 40px;
+    line-height: 47px;
+    font-weight: 600;
+}
+.tile_stats_count .count small {
+    font-size: 20px;
+    line-height: 20px;
+    font-weight: 600;
+}

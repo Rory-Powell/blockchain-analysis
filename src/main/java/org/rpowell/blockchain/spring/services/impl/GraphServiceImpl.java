@@ -19,4 +19,8 @@ public class GraphServiceImpl implements IGraphService {
     public List<Address> getAllAddresses() {
        return graphRepository.getAllAddresses();
     }
+
+    public List<Address> getAssociatedAddresses(String address) {
+        return graphRepository.getAssociatedAddresses(address);
+    }
 }

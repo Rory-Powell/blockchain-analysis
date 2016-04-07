@@ -1,31 +1,86 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 
-    <title>Home</title>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-    <!--/*/ <th:block th:include="fragments/include :: head"></th:block> /*/-->
+  <title>Admin</title>
+
+  <!-- CSS-->
+
+  <!--/*/ <th:block th:include="fragments/include :: head"></th:block> /*/-->
+
+  <link th:href="@{/webjars/animate.css/3.2.0/animate.min.css}"/>
+
+  <link href="../static/css/admin.css" rel="stylesheet" type="text/css"
+        th:href="@{/css/admin.css}" />
+
 </head>
+
 <body>
 
-<div id="holder">
-    <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+<!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+<div id="body">
 
-    <div id="body">
-
-        <div class="container">
-            <div class="jumbotron">
-                <div class="row text-center">
-                    <img src="../static/images/blockchain_logo_2.png" width="400"
-                         th:src="@{/images/blockchain_logo_2.png}"/>
-                </div>
-            </div>
-        </div>
-
+  <!-- Top tiles -->
+  <!-- Node -->
+  <div class="row tile_count">
+    <div class="animated flipInY col-md-2 col-sm-4 col-xs-4 tile_stats_count">
+      <div class="left"></div>
+      <div class="right">
+        <span class="count_top"><i class="fa fa-circle fa-lg"></i> Total Nodes</span>
+        <div class="count">00000000</div>
+      </div>
     </div>
 
-    <!--/*/ <th:block th:include="fragments/footer :: footer"></th:block> /*/-->
+    <!-- Addresses -->
+    <div class="animated flipInY col-md-2 col-sm-4 col-xs-4 tile_stats_count">
+      <div class="left"></div>
+      <div class="right">
+        <span class="count_top"><i class="fa fa-home fa-lg"></i> Total Addresses</span>
+        <div class="count">00000000</div>
+      </div>
+    </div>
+
+    <!-- Transactions -->
+    <div class="animated flipInY col-md-2 col-sm-4 col-xs-4 tile_stats_count">
+      <div class="left"></div>
+      <div class="right">
+        <span class="count_top"><i class="fa fa-btc fa-lg"></i> Total Transactions</span>
+        <div class="count">00000000</div>
+      </div>
+    </div>
+
+    <!-- Owners -->
+    <div class="animated flipInY col-md-2 col-sm-4 col-xs-4 tile_stats_count">
+      <div class="left"></div>
+      <div class="right">
+        <span class="count_top"><i class="fa fa-user fa-lg"></i> Total Owners</span>
+        <div class="count">00000000</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="container">
+    <div class="jumbotron">
+      <div class="row text-center">
+        <img src="../static/images/blockchain_logo_2.png" width="400"
+             th:src="@{/images/blockchain_logo_2.png}"/>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+
+  </div>
+
 </div>
 
+<!--/*/ <th:block th:include="fragments/footer :: footer"></th:block> /*/-->
+
 </body>
+
 </html>

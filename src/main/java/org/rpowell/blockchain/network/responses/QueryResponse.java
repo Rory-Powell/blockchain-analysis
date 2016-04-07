@@ -1,4 +1,4 @@
-package org.rpowell.blockchain.network;
+package org.rpowell.blockchain.network.responses;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AddressesResponse {
+public class QueryResponse {
 
     @JsonProperty("results")
     private Object results;

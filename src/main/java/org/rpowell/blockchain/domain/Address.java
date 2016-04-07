@@ -3,6 +3,7 @@ package org.rpowell.blockchain.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.List;
+import java.util.Objects;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Address {
@@ -61,4 +62,29 @@ public class Address {
     public void setHash160(String hash160) {
         this.hash160 = hash160;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        Address guest = (Address) obj;
+
+        return Objects.equals(address, guest.getAddress());
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((address == null) ? 0 : address.hashCode());
+
+        return result;
+    }
+
 }

@@ -8,4 +8,6 @@ public interface IGraphService {
 
     List<Address> getAllAddresses();
 
+    List<Address> getAssociatedAddresses(String address);
+
 }
