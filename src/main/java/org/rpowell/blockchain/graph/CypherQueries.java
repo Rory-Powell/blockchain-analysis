@@ -1,9 +1,17 @@
 package org.rpowell.blockchain.graph;
 
+import org.neo4j.graphdb.Label;
+
 import static org.rpowell.blockchain.graph.GraphConstants.*;
 
 public class CypherQueries {
 
+    /**
+     * The cypher query used to get the immediate community of a given address.
+     * @param address   The address to detect the community for.
+     * @param depth     The depth of the search.
+     * @return          THe query.
+     */
     public static String addressQuery(String address, int depth) {
         return  "MATCH (n:" + Labels.ADDRESS + ") " +
                 "WHERE n." + Props.ADDR + " = '" + address + "' " +
@@ -20,30 +28,64 @@ public class CypherQueries {
         return "MATCH (n:Address) RETURN n.Addr LIMIT " + limit;
     }
 
+    /**
+     * The Cypher query used to get the owner ID's of a given address.
+     * @param address   The address to find owner for.
+     * @return          The query.
+     */
     public static String ownerQuery(String address) {
         return "MATCH (n:Address {Addr:'" + address + "'})<-[:Same_Owner]-(wallet) RETURN DISTINCT ID(wallet)";
-//        return "MATCH (n:Address {Addr:'16XQkgZgdxRe3MqK7nGQx8yfbw8bdF19ZT'})<-[:Same_Owner]-(wallet) RETURN ID(wallet)";
     }
 
+    /**
+     * The Cypher query used to get the addresses of an owner given it's ID.
+     * @param ownerId   The ID of the owner.
+     * @return          The addresses owned by the owner.
+     */
     public static String addressesOfOwnerQuery(int ownerId) {
         return "MATCH (n:Wallet) where ID(n) = " + ownerId + " match n-[:Same_Owner]->(address) RETURN address.Addr";
-//        return "MATCH (n:Wallet) where ID(n) = 15 match n-[:Same_Owner]->(address) RETURN address";
     }
 
+    /**
+     * The Cypher query used to get the count of all addresses in the database.
+     * @return  The query.
+     */
     public static String addressCountQuery() {
-        return null;
+        return getCountQuery(Labels.ADDRESS);
     }
 
+    /**
+     * The Cypher query used to get the count of all transactions in the database.
+     * @return  The query.
+     */
     public static String transactionCountQuery() {
-        return null;
+        return getCountQuery(Labels.TRANSACTION);
     }
 
-    public static String nodeCountQuery() {
-        return null;
-    }
-
-    // TODO : This is the tough one - Persistence logic will need changed
+    /**
+     * The Cypher query used to get the count of all owners in the database.
+     * @return  The query.
+     */
     public static String ownerCountQuery() {
-        return null;
+        return getCountQuery(Labels.WALLET); // TODO : This is the tough one - Persistence logic will need changed
     }
+
+    /**
+     * The Cypher query used to get the count of all nodes in the database.
+     * @return  The query.
+     */
+    public static String nodeCountQuery() {
+        return "MATCH (n) RETURN count(n)";
+    }
+
+    /**
+     * Using a given label, get the query to count the number of nodes with that label.
+     * @param label The label to count.
+     * @return      The query.
+     */
+    private static String getCountQuery(Label label) {
+        return "Match (n:" + label + ") RETURN count(n)";
+    }
+
+
 }

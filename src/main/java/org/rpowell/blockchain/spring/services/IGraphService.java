@@ -10,4 +10,16 @@ public interface IGraphService {
 
     List<Address> getAssociatedAddresses(String address);
 
+    int getAddressCount();
+
+    int getOwnerCount();
+
+    int getNodeCount();
+
+    int getTransactionCount();
+
+    void shutdownServer();
+
+    void startServer();
+
 }

@@ -20,6 +20,34 @@ public class GraphRepositoryImpl implements IGraphRepository {
 
     protected GraphRepositoryImpl() {}
 
+    public int getAddressCount() {
+        ResponseEntity<QueryResponse> response = GraphRequests
+                .queryForObject(CypherQueries.addressCountQuery(), QueryResponse.class);
+
+        return extractCount(response);
+    }
+
+    public int getTransactionCount() {
+        ResponseEntity<QueryResponse> response = GraphRequests
+                .queryForObject(CypherQueries.transactionCountQuery(), QueryResponse.class);
+
+        return extractCount(response);
+    }
+
+    public int getOwnerCount() {
+        ResponseEntity<QueryResponse> response = GraphRequests
+                .queryForObject(CypherQueries.ownerCountQuery(), QueryResponse.class);
+
+        return extractCount(response);
+    }
+
+    public int getNodeCount() {
+        ResponseEntity<QueryResponse> response = GraphRequests
+                .queryForObject(CypherQueries.nodeCountQuery(), QueryResponse.class);
+
+        return extractCount(response);
+    }
+
     public List<Address> getAssociatedAddresses(String address) {
         // Get the wallets associated with this address
         ResponseEntity<QueryResponse> response = GraphRequests
@@ -72,6 +100,14 @@ public class GraphRepositoryImpl implements IGraphRepository {
         }
 
         return addresses;
+    }
+
+    private int extractCount(ResponseEntity<QueryResponse> response) {
+        List<Map> maps = getDataMaps(response);
+        Map map = maps.get(0);
+
+        List<Integer> results = (List<Integer>) map.get("row");
+        return results.get(0);
     }
 
     private List<Map> getDataMaps(ResponseEntity<QueryResponse> responseEntity) {

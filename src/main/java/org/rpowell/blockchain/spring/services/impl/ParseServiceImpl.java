@@ -9,6 +9,7 @@ import org.rpowell.blockchain.domain.Input;
 import org.rpowell.blockchain.domain.Output;
 import org.rpowell.blockchain.domain.Transaction;
 import org.rpowell.blockchain.shared.FileComparator;
+import org.rpowell.blockchain.spring.controllers.GraphController;
 import org.rpowell.blockchain.spring.services.IParseService;
 import org.rpowell.blockchain.shared.FileUtil;
 import org.rpowell.blockchain.shared.StringConstants;
@@ -119,6 +120,7 @@ public class ParseServiceImpl implements IParseService {
             // Always ensure inserter is shutdown
             if(!isShutdown && batchInserter != null) {
                 writeBatch(batchInserter);
+                GraphController.dbUpdated = true;
             }
         }
     }
@@ -130,8 +132,7 @@ public class ParseServiceImpl implements IParseService {
         log.info("Graph is now shutdown and ready to use");
     }
 
-    private void storeTransaction(Transaction transaction, BatchInserter batchInserter)
-    {
+    private void storeTransaction(Transaction transaction, BatchInserter batchInserter) {
         long txNode;
         long walletNode;
         Map<String, Object> txProps = new HashMap<>();

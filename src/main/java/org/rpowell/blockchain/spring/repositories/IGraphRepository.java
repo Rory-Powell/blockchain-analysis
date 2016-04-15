@@ -10,4 +10,12 @@ public interface IGraphRepository {
 
     List<Address> getAssociatedAddresses(String address);
 
+    int getAddressCount();
+
+    int getOwnerCount();
+
+    int getNodeCount();
+
+    int getTransactionCount();
+
 }

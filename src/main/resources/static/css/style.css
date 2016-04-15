@@ -60,14 +60,12 @@ html,body{
 	font-size: 18px;
 }
 
-td.content {
+.graphInfoPanel {
 	position: relative;
+	top: -800px;
+	margin-left: 40px;
+	margin-top: 40px;
+	width: 500px;
+	text-align: center;
 }
-div.over {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: red;
-}
+

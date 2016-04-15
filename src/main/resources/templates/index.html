@@ -22,46 +22,48 @@
 <body>
 
 <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
-<div id="body">
+<div id="body" align="center">
 
   <!-- Top tiles -->
   <!-- Node -->
-  <div class="row tile_count">
-    <div class="animated flipInY col-md-2 col-sm-4 col-xs-4 tile_stats_count">
-      <div class="left"></div>
-      <div class="right">
+  <div>
+    <div class="row tile_count" align="center">
+    <div class="animated flipInY col-md-3 tile_stats_count" align="center">
+      <div class="left" align="center"></div>
+      <div class="right" align="center">
         <span class="count_top"><i class="fa fa-circle fa-lg"></i> Total Nodes</span>
-        <div class="count">00000000</div>
+        <div class="count" th:text="${nodeCount}" ></div>
       </div>
     </div>
 
     <!-- Addresses -->
-    <div class="animated flipInY col-md-2 col-sm-4 col-xs-4 tile_stats_count">
+    <div class="animated flipInY col-md-3 tile_stats_count">
       <div class="left"></div>
       <div class="right">
         <span class="count_top"><i class="fa fa-home fa-lg"></i> Total Addresses</span>
-        <div class="count">00000000</div>
+        <div class="count" th:text="${addressCount}"></div>
       </div>
     </div>
 
     <!-- Transactions -->
-    <div class="animated flipInY col-md-2 col-sm-4 col-xs-4 tile_stats_count">
+    <div class="animated flipInY col-md-3 tile_stats_count">
       <div class="left"></div>
       <div class="right">
         <span class="count_top"><i class="fa fa-btc fa-lg"></i> Total Transactions</span>
-        <div class="count">00000000</div>
+        <div class="count" th:text="${transactionCount}"></div>
       </div>
     </div>
 
     <!-- Owners -->
-    <div class="animated flipInY col-md-2 col-sm-4 col-xs-4 tile_stats_count">
+    <div class="animated flipInY col-md-3 tile_stats_count">
       <div class="left"></div>
       <div class="right">
         <span class="count_top"><i class="fa fa-user fa-lg"></i> Total Owners</span>
-        <div class="count">00000000</div>
+        <div class="count" th:text="${ownerCount}"></div>
       </div>
     </div>
 
+  </div>
   </div>
 
   <div class="container">

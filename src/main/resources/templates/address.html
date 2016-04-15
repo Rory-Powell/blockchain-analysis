@@ -24,28 +24,25 @@
     </div>
 
     <div id="body">
-        <div class="row">
-            <div class="col-md-3">
-                <div class="panel panel-default">
-                    <div class="panel-heading blockInfoHeader" id="address" th:text="${address}"></div>
+        <div class="panel panel-default graphInfoPanel">
+            <div class="panel-heading blockInfoHeader" id="address" th:text="${address}"></div>
 
-                    <div th:if="${not #lists.isEmpty(associated)}">
+            <div th:if="${not #lists.isEmpty(associated)}">
 
-                        <table class="table table-striped table-hover" >
-                            <tr>
-                                <h5 align="center">Potentially Owned By This Address</h5>
-                            </tr>
-                            <tr>
-                                <th>Address</th>
-                                <th>View</th>
-                            </tr>
-                            <tr th:each="address : ${associated}">
-                                <td th:text="${address.address}">Address</td>
-                                <td><a th:href="${ '/address/' + address.address}">View</a></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
+                <table class="table table-striped table-hover" >
+                    <tr>
+                        <h5 align="center" >Potentially shares owner with</h5>
+                        <h5 align="center" th:text="${associatedCount}"></h5>
+                    </tr>
+                    <tr>
+                        <th>Address</th>
+                        <th>View</th>
+                    </tr>
+                    <tr th:each="address : ${associated}">
+                        <td align="left" th:text="${address.address}">Address</td>
+                        <td><a th:href="${ '/address/' + address.address}">View</a></td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>

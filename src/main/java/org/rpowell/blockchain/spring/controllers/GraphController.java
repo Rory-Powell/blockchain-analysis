@@ -23,8 +23,35 @@ public class GraphController {
 
     private static final Logger log = LoggerFactory.getLogger(GraphController.class);
 
+    public static boolean dbUpdated = true;
+
+    private int addressCount;
+    private int nodeCount;
+    private int transactionCount;
+    private int ownerCount;
+
     @Autowired
     private IGraphService graphService;
+
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String index(Model model) {
+
+        if (dbUpdated) {
+            addressCount = graphService.getAddressCount();
+            nodeCount = graphService.getNodeCount();
+            transactionCount = graphService.getTransactionCount();
+            ownerCount = graphService.getOwnerCount();
+
+            dbUpdated = false;
+        }
+
+        model.addAttribute("addressCount", addressCount);
+        model.addAttribute("nodeCount", nodeCount);
+        model.addAttribute("transactionCount", transactionCount);
+        model.addAttribute("ownerCount", ownerCount);
+
+        return "index";
+    }
 
     @RequestMapping(value = "/addresses", method = RequestMethod.GET)
     public String listAddresses(Model model){
@@ -63,6 +90,22 @@ public class GraphController {
         if (auth != null){
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
+        return "index";
+    }
+
+    public void updateDatabase() {
+
+    }
+
+    @RequestMapping(value="/shutdown")
+    public String shutdownServer () {
+        graphService.shutdownServer();
+        return "index";
+    }
+
+    @RequestMapping(value="/start")
+    public String startServer () {
+        graphService.startServer();
         return "index";
     }
 }

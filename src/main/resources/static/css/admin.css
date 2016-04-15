@@ -2,6 +2,8 @@
     margin-bottom: 20px;
     margin-top: 20px;
     alignment: center;
+    width: 80%;
+    margin: 0 auto;
 }
 .tile_count div:first-child .left {
     border: 0;
@@ -9,6 +11,7 @@
 .tile_count .tile_stats_count {
     border-left: 0px solid #333;
     padding: 0;
+    alignment: center;
 }
 .tile_stats_count .left {
     width: 15%;
@@ -22,6 +25,7 @@
     height: 100%;
     text-overflow: ellipsis;
     overflow: hidden;
+    alignment: center;
 }
 .tile_stats_count .right span {
     text-overflow: ellipsis;
@@ -31,6 +35,7 @@
     font-size: 40px;
     line-height: 47px;
     font-weight: 600;
+    alignment: center;
 }
 .tile_stats_count .count small {
     font-size: 20px;
