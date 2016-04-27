@@ -20,6 +20,6 @@ public class App implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		log.info("Started Application");
-		// CI Test 2
+		// CI Test 3
 	}
 }
