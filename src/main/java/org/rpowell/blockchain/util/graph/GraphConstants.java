@@ -1,4 +1,4 @@
-package org.rpowell.blockchain.graph;
+package org.rpowell.blockchain.util.graph;
 
 import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.DynamicRelationshipType;

@@ -18,8 +18,7 @@ public class BlockInfoRequests {
     private static final String URI = "https://blockchain.info/";
     private static RestTemplate restTemplate = new RestTemplate();
 
-
-    public static Block getBlockByhash(String hash) {
+    public static Block getBlockByHash(String hash) {
         log.info("Downloading block " + hash);
         return restTemplate.getForObject(URI + RAW_BLOCK + hash, Block.class);
     }

@@ -1,4 +1,4 @@
-package org.rpowell.blockchain.shared;
+package org.rpowell.blockchain.util.constant;
 
 public class StringConstants {
 

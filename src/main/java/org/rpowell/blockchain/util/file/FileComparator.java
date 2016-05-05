@@ -1,4 +1,4 @@
-package org.rpowell.blockchain.shared;
+package org.rpowell.blockchain.util.file;
 
 import java.io.File;
 import java.util.Comparator;

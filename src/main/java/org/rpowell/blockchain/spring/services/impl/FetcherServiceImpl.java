@@ -3,10 +3,10 @@ package org.rpowell.blockchain.spring.services.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.rpowell.blockchain.domain.*;
 import org.rpowell.blockchain.network.requests.BlockInfoRequests;
-import org.rpowell.blockchain.shared.FileComparator;
+import org.rpowell.blockchain.util.file.FileComparator;
 import org.rpowell.blockchain.spring.services.IFetcherService;
-import org.rpowell.blockchain.shared.FileUtil;
-import org.rpowell.blockchain.shared.StringConstants;
+import org.rpowell.blockchain.util.file.FileUtil;
+import org.rpowell.blockchain.util.constant.StringConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -49,9 +49,9 @@ public class FetcherServiceImpl implements IFetcherService {
 
         // Retrieve the latest block on the blockchain
         LatestBlock latestBlock = BlockInfoRequests.getLatestBlock();
-        Block latestNetworkBlock = BlockInfoRequests.getBlockByhash(latestBlock.getHash());
+        Block latestNetworkBlock = BlockInfoRequests.getBlockByHash(latestBlock.getHash());
 
-        Block genesisBlock = BlockInfoRequests.getBlockByhash(StringConstants.GENESIS_BLOCK);
+        Block genesisBlock = BlockInfoRequests.getBlockByHash(StringConstants.GENESIS_BLOCK);
 
         if (jsonFiles.isEmpty()) {
             log.info(StringConstants.LINE_BREAK);
@@ -80,7 +80,7 @@ public class FetcherServiceImpl implements IFetcherService {
                     log.info("Continuing blockchain history download. Feel free to cancel this process.");
                     log.info(StringConstants.LINE_BREAK);
 
-                    Block previousBlock = BlockInfoRequests.getBlockByhash(earliestBlockOnDisk.getPrev_block());
+                    Block previousBlock = BlockInfoRequests.getBlockByHash(earliestBlockOnDisk.getPrev_block());
                     downloadBlocks(previousBlock, genesisBlock.getBlock_index());
                 }
             }
@@ -90,7 +90,6 @@ public class FetcherServiceImpl implements IFetcherService {
     /**
      * Download blocks to disk starting from the given block and
      * working backwards.
-     *
      * @param startBlock The block to start downloading from.
      */
     private void downloadBlocks(Block startBlock, long stopIndex) {
@@ -108,7 +107,7 @@ public class FetcherServiceImpl implements IFetcherService {
                 log.info("Remaining Blocks: " + (index - stopIndex));
                 log.info(StringConstants.LINE_BREAK);
 
-                startBlock = BlockInfoRequests.getBlockByhash(startBlock.getPrev_block());
+                startBlock = BlockInfoRequests.getBlockByHash(startBlock.getPrev_block());
 
                 count++;
             } catch (Exception e) {

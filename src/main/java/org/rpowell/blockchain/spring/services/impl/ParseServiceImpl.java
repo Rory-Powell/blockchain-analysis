@@ -8,20 +8,19 @@ import org.rpowell.blockchain.domain.Block;
 import org.rpowell.blockchain.domain.Input;
 import org.rpowell.blockchain.domain.Output;
 import org.rpowell.blockchain.domain.Transaction;
-import org.rpowell.blockchain.shared.FileComparator;
+import org.rpowell.blockchain.util.file.FileComparator;
 import org.rpowell.blockchain.spring.controllers.GraphController;
 import org.rpowell.blockchain.spring.services.IParseService;
-import org.rpowell.blockchain.shared.FileUtil;
-import org.rpowell.blockchain.shared.StringConstants;
+import org.rpowell.blockchain.util.file.FileUtil;
+import org.rpowell.blockchain.util.constant.StringConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-import static org.rpowell.blockchain.graph.GraphConstants.*;
+import static org.rpowell.blockchain.util.graph.GraphConstants.*;
 
 @Service
 public class ParseServiceImpl implements IParseService {
@@ -41,7 +40,8 @@ public class ParseServiceImpl implements IParseService {
         BatchInserter batchInserter = null;
         try {
             List<File> jsonFiles = FileUtil.getFolderContents(StringConstants.JSON_PATH);
-            Collections.sort(jsonFiles, new FileComparator(StringConstants.JSON_FILE_EXT)); // Sort the files from earliest to latest
+            // Sort the files from earliest to latest
+            Collections.sort(jsonFiles, new FileComparator(StringConstants.JSON_FILE_EXT));
 
             List<File> nonPersistedFiles;
 
@@ -54,7 +54,8 @@ public class ParseServiceImpl implements IParseService {
                 int fromIndex = -1;
                 for (int i = 0; i < jsonFiles.size(); i++) {
                     File file = jsonFiles.get(i);
-                    if (file.getName().substring(0, file.getName().length() - StringConstants.JSON_FILE_EXT.length()).equals(Integer.toString(latestBlockIndex))) {
+                    if (file.getName().substring(0, file.getName().length() - StringConstants.JSON_FILE_EXT.length())
+                                        .equals(Integer.toString(latestBlockIndex))) {
                         fromIndex = i;
                         break; // Found it
                     }
@@ -129,11 +130,11 @@ public class ParseServiceImpl implements IParseService {
         log.info("Initiating graph shutdown.... this may take quite a while.");
         batchInserter.shutdown();
         isShutdown = true;
-        log.info("Graph is now shutdown and ready to use");
+        log.info("Embedded database is now shutdown and ready to use in server mode");
     }
 
     private void storeTransaction(Transaction transaction, BatchInserter batchInserter) {
-        long txNode;
+        long transactionNode;
         long walletNode;
         Map<String, Object> txProps = new HashMap<>();
 
@@ -141,7 +142,7 @@ public class ParseServiceImpl implements IParseService {
         txProps.put(Props.HASH, transaction.getHash());
         txProps.put(Props.TIMESTAMP, transaction.getTime());
 
-        txNode = batchInserter.createNode(txProps, Labels.TRANSACTION);
+        transactionNode = batchInserter.createNode(txProps, Labels.TRANSACTION);
 
         if (transaction.getInputs().size() > 1) {
             walletNode = batchInserter.createNode(null, Labels.WALLET);
@@ -155,14 +156,14 @@ public class ParseServiceImpl implements IParseService {
             /**
              * lookup existing or create new address node
              */
-            Long addrNode = addressIndex.get(input.getPrev_out().getAddr());
-            if (addrNode == null) {
+            Long addressNode = addressIndex.get(input.getPrev_out().getAddr());
+            if (addressNode == null) {
                 Map<String, Object> addressProperties = new HashMap<>();
                 addressProperties.put(Props.ADDR, input.getPrev_out().getAddr());
 
-                addrNode = batchInserter.createNode(addressProperties, Labels.ADDRESS);
+                addressNode = batchInserter.createNode(addressProperties, Labels.ADDRESS);
 
-                addressIndex.put(input.getPrev_out().getAddr(), addrNode);
+                addressIndex.put(input.getPrev_out().getAddr(), addressNode);
             }
 
             Map<String, Object> inProps = new HashMap<>();
@@ -170,10 +171,10 @@ public class ParseServiceImpl implements IParseService {
             inProps.put(Props.FROM_TX_INDEX, input.getPrev_out().getTx_index());
 
             // input withdraws from the address
-            batchInserter.createRelationship(addrNode, txNode, Relationships.WITHDRAW, inProps);
+            batchInserter.createRelationship(addressNode, transactionNode, Relationships.WITHDRAW, inProps);
 
             if (walletNode != 0) {
-                batchInserter.createRelationship(walletNode, addrNode, Relationships.SAME_OWNER, null);
+                batchInserter.createRelationship(walletNode, addressNode, Relationships.SAME_OWNER, null);
             }
 
         }
@@ -197,7 +198,7 @@ public class ParseServiceImpl implements IParseService {
             }
 
             // output deposits into the address
-            batchInserter.createRelationship(txNode, addrNode, Relationships.DEPOSIT, outProps);
+            batchInserter.createRelationship(transactionNode, addrNode, Relationships.DEPOSIT, outProps);
 
         }
 

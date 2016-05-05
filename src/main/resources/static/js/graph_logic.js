@@ -43,11 +43,10 @@ function draw_forced_directed(data){
         .attr("height", height)
         .attr("pointer-events", "all");
 
-    // load graph (nodes,links) json from /graph endpoint
     force.nodes(graph.nodes).links(graph.links).start();
 
-    // render relationships as lines
-    var link = svg.selectAll(".link")
+
+    var link = svg.selectAll(".link") // render relationships as lines
         .data(graph.links).enter()
         .append("line").attr("class", "link");
 

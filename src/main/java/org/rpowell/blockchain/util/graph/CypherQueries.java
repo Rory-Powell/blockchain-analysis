@@ -1,8 +1,8 @@
-package org.rpowell.blockchain.graph;
+package org.rpowell.blockchain.util.graph;
 
 import org.neo4j.graphdb.Label;
 
-import static org.rpowell.blockchain.graph.GraphConstants.*;
+import static org.rpowell.blockchain.util.graph.GraphConstants.*;
 
 public class CypherQueries {
 

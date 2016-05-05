@@ -1,7 +1,7 @@
 package org.rpowell.blockchain.spring.repositories.impl;
 
 import org.rpowell.blockchain.domain.*;
-import org.rpowell.blockchain.graph.CypherQueries;
+import org.rpowell.blockchain.util.graph.CypherQueries;
 import org.rpowell.blockchain.network.requests.GraphRequests;
 import org.rpowell.blockchain.network.responses.QueryResponse;
 import org.rpowell.blockchain.spring.repositories.IGraphRepository;
