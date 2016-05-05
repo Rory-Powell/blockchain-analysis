@@ -9,7 +9,6 @@ import static org.junit.Assert.*;
 public class AddressTest {
     @Before
     public void setUp() throws Exception {
-
     }
 
     @After
@@ -19,7 +18,7 @@ public class AddressTest {
 
     @Test
     public void dummy() {
-        assertTrue(true);
+        assertTrue(false);
     }
 
 }
