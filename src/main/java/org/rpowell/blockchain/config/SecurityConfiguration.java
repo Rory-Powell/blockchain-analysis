@@ -1,4 +1,4 @@
-package org.rpowell.blockchain.spring.config;
+package org.rpowell.blockchain.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

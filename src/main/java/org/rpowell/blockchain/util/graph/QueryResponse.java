@@ -1,4 +1,4 @@
-package org.rpowell.blockchain.network.responses;
+package org.rpowell.blockchain.util.graph;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;

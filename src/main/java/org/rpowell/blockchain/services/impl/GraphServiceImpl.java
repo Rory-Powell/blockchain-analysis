@@ -1,11 +1,12 @@
-package org.rpowell.blockchain.spring.services.impl;
+package org.rpowell.blockchain.services.impl;
 
 import org.rpowell.blockchain.domain.Address;
-import org.rpowell.blockchain.spring.repositories.IGraphRepository;
-import org.rpowell.blockchain.spring.services.IFetcherService;
-import org.rpowell.blockchain.spring.services.IGraphService;
-import org.rpowell.blockchain.spring.services.IParseService;
+import org.rpowell.blockchain.repositories.IGraphRepository;
+import org.rpowell.blockchain.services.IFetcherService;
+import org.rpowell.blockchain.services.IGraphService;
+import org.rpowell.blockchain.services.IParseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -23,6 +24,9 @@ public class GraphServiceImpl implements IGraphService {
 
     @Autowired
     private IFetcherService fetcherService;
+
+    @Autowired
+    private Environment env;
 
     protected GraphServiceImpl() {}
 

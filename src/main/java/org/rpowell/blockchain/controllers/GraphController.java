@@ -1,7 +1,7 @@
-package org.rpowell.blockchain.spring.controllers;
+package org.rpowell.blockchain.controllers;
 
 import org.rpowell.blockchain.domain.Address;
-import org.rpowell.blockchain.spring.services.IGraphService;
+import org.rpowell.blockchain.services.IGraphService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

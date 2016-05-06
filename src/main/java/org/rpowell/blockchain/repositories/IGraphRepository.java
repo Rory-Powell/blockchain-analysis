@@ -1,10 +1,10 @@
-package org.rpowell.blockchain.spring.services;
+package org.rpowell.blockchain.repositories;
 
 import org.rpowell.blockchain.domain.Address;
 
 import java.util.List;
 
-public interface IGraphService {
+public interface IGraphRepository {
 
     List<Address> getAllAddresses();
 
@@ -17,9 +17,5 @@ public interface IGraphService {
     int getNodeCount();
 
     int getTransactionCount();
-
-    void shutdownServer();
-
-    void startServer();
 
 }

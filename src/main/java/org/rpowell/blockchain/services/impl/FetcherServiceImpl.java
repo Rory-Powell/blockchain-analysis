@@ -1,16 +1,16 @@
-package org.rpowell.blockchain.spring.services.impl;
+package org.rpowell.blockchain.services.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.rpowell.blockchain.domain.*;
-import org.rpowell.blockchain.network.requests.BlockInfoRequests;
+import org.rpowell.blockchain.services.IHttpService;
 import org.rpowell.blockchain.util.file.FileComparator;
-import org.rpowell.blockchain.spring.services.IFetcherService;
+import org.rpowell.blockchain.services.IFetcherService;
 import org.rpowell.blockchain.util.file.FileUtil;
 import org.rpowell.blockchain.util.constant.StringConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,6 +24,9 @@ public class FetcherServiceImpl implements IFetcherService {
     public static Block latestBlockOnDisk;
 
     private static final Logger log = LoggerFactory.getLogger(FetcherServiceImpl.class);
+
+    @Autowired
+    private IHttpService httpService;
 
     private final ObjectMapper mapper = new ObjectMapper();
     private int count = 0;
@@ -48,10 +51,10 @@ public class FetcherServiceImpl implements IFetcherService {
         Collections.sort(jsonFiles, new FileComparator(StringConstants.JSON_FILE_EXT));
 
         // Retrieve the latest block on the blockchain
-        LatestBlock latestBlock = BlockInfoRequests.getLatestBlock();
-        Block latestNetworkBlock = BlockInfoRequests.getBlockByHash(latestBlock.getHash());
+        LatestBlock latestBlock = httpService.getLatestBlock();
+        Block latestNetworkBlock = httpService.getBlockByHash(latestBlock.getHash());
 
-        Block genesisBlock = BlockInfoRequests.getBlockByHash(StringConstants.GENESIS_BLOCK);
+        Block genesisBlock = httpService.getBlockByHash(StringConstants.GENESIS_BLOCK);
 
         if (jsonFiles.isEmpty()) {
             log.info(StringConstants.LINE_BREAK);
@@ -80,7 +83,7 @@ public class FetcherServiceImpl implements IFetcherService {
                     log.info("Continuing blockchain history download. Feel free to cancel this process.");
                     log.info(StringConstants.LINE_BREAK);
 
-                    Block previousBlock = BlockInfoRequests.getBlockByHash(earliestBlockOnDisk.getPrev_block());
+                    Block previousBlock = httpService.getBlockByHash(earliestBlockOnDisk.getPrev_block());
                     downloadBlocks(previousBlock, genesisBlock.getBlock_index());
                 }
             }
@@ -107,7 +110,7 @@ public class FetcherServiceImpl implements IFetcherService {
                 log.info("Remaining Blocks: " + (index - stopIndex));
                 log.info(StringConstants.LINE_BREAK);
 
-                startBlock = BlockInfoRequests.getBlockByHash(startBlock.getPrev_block());
+                startBlock = httpService.getBlockByHash(startBlock.getPrev_block());
 
                 count++;
             } catch (Exception e) {

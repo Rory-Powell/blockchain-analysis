@@ -1,57 +1,59 @@
-package org.rpowell.blockchain.spring.repositories.impl;
+package org.rpowell.blockchain.repositories.impl;
 
 import org.rpowell.blockchain.domain.*;
+import org.rpowell.blockchain.services.INeo4jHttpService;
 import org.rpowell.blockchain.util.graph.CypherQueries;
-import org.rpowell.blockchain.network.requests.GraphRequests;
-import org.rpowell.blockchain.network.responses.QueryResponse;
-import org.rpowell.blockchain.spring.repositories.IGraphRepository;
+import org.rpowell.blockchain.util.graph.QueryResponse;
+import org.rpowell.blockchain.repositories.IGraphRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Repository;
-
 import java.util.*;
-
 
 @Repository
 public class GraphRepositoryImpl implements IGraphRepository {
 
     private static final Logger log = LoggerFactory.getLogger(GraphRepositoryImpl.class);
 
+    @Autowired
+    private INeo4jHttpService neo4jHttpService;
+
     protected GraphRepositoryImpl() {}
 
     public int getAddressCount() {
-        ResponseEntity<QueryResponse> response = GraphRequests
-                .queryForObject(CypherQueries.addressCountQuery(), QueryResponse.class);
+        ResponseEntity<QueryResponse> response = neo4jHttpService
+                .queryDatabase(CypherQueries.addressCountQuery(), QueryResponse.class);
 
         return extractCount(response);
     }
 
     public int getTransactionCount() {
-        ResponseEntity<QueryResponse> response = GraphRequests
-                .queryForObject(CypherQueries.transactionCountQuery(), QueryResponse.class);
+        ResponseEntity<QueryResponse> response = neo4jHttpService
+                .queryDatabase(CypherQueries.transactionCountQuery(), QueryResponse.class);
 
         return extractCount(response);
     }
 
     public int getOwnerCount() {
-        ResponseEntity<QueryResponse> response = GraphRequests
-                .queryForObject(CypherQueries.ownerCountQuery(), QueryResponse.class);
+        ResponseEntity<QueryResponse> response = neo4jHttpService
+                .queryDatabase(CypherQueries.ownerCountQuery(), QueryResponse.class);
 
         return extractCount(response);
     }
 
     public int getNodeCount() {
-        ResponseEntity<QueryResponse> response = GraphRequests
-                .queryForObject(CypherQueries.nodeCountQuery(), QueryResponse.class);
+        ResponseEntity<QueryResponse> response = neo4jHttpService
+                .queryDatabase(CypherQueries.nodeCountQuery(), QueryResponse.class);
 
         return extractCount(response);
     }
 
     public List<Address> getAssociatedAddresses(String address) {
         // Get the wallets associated with this address
-        ResponseEntity<QueryResponse> response = GraphRequests
-                .queryForObject(CypherQueries.ownerQuery(address), QueryResponse.class);
+        ResponseEntity<QueryResponse> response = neo4jHttpService
+                .queryDatabase(CypherQueries.ownerQuery(address), QueryResponse.class);
 
         // Use set for unique answers
         Set<Address> addressSet = new HashSet<>();
@@ -62,8 +64,8 @@ public class GraphRepositoryImpl implements IGraphRepository {
             int walletId = values.get(0);
 
             // Get all the addresses in that wallet
-            ResponseEntity<QueryResponse> response1 = GraphRequests
-                    .queryForObject(CypherQueries.addressesOfOwnerQuery(walletId), QueryResponse.class);
+            ResponseEntity<QueryResponse> response1 = neo4jHttpService
+                    .queryDatabase(CypherQueries.addressesOfOwnerQuery(walletId), QueryResponse.class);
 
             // Add them to the set
             for (Map map1 : getDataMaps(response1)) {
@@ -87,8 +89,8 @@ public class GraphRepositoryImpl implements IGraphRepository {
      * @return  A resource iterator of address nodes.
      */
     public List<Address> getAllAddresses() {
-        ResponseEntity<QueryResponse> response = GraphRequests
-                .queryForObject(CypherQueries.addressesQuery(1000), QueryResponse.class);
+        ResponseEntity<QueryResponse> response = neo4jHttpService
+                .queryDatabase(CypherQueries.addressesQuery(1000), QueryResponse.class);
 
         List<Address> addresses = new ArrayList<>();
 
