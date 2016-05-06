@@ -11,7 +11,7 @@ import org.rpowell.blockchain.App;
 import org.rpowell.blockchain.domain.Address;
 import org.rpowell.blockchain.domain.Block;
 import org.rpowell.blockchain.domain.LatestBlock;
-import org.rpowell.blockchain.services.IHttpService;
+import org.rpowell.blockchain.services.IBlockchainHttpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -31,7 +31,7 @@ public class BlockchainHttpServiceImplTest {
 
     @Autowired
     @InjectMocks
-    private IHttpService httpService;
+    private IBlockchainHttpService httpService;
 
     @Before
     public void initMocks(){

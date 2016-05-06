@@ -4,7 +4,7 @@ import org.rpowell.blockchain.domain.Address;
 import org.rpowell.blockchain.domain.Block;
 import org.rpowell.blockchain.domain.LatestBlock;
 
-public interface IHttpService {
+public interface IBlockchainHttpService {
 
     Block getBlockByHash(String hash);
 

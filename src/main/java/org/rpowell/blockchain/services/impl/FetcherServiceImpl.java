@@ -2,7 +2,7 @@ package org.rpowell.blockchain.services.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.rpowell.blockchain.domain.*;
-import org.rpowell.blockchain.services.IHttpService;
+import org.rpowell.blockchain.services.IBlockchainHttpService;
 import org.rpowell.blockchain.util.file.FileComparator;
 import org.rpowell.blockchain.services.IFetcherService;
 import org.rpowell.blockchain.util.file.FileUtil;
@@ -26,35 +26,46 @@ public class FetcherServiceImpl implements IFetcherService {
     private static final Logger log = LoggerFactory.getLogger(FetcherServiceImpl.class);
 
     @Autowired
-    private IHttpService httpService;
+    private IBlockchainHttpService blockchainHttpService;
 
     private final ObjectMapper mapper = new ObjectMapper();
     private int count = 0;
-    private boolean resume = false;
 
     // For use by spring
     protected FetcherServiceImpl() {}
 
+    /**
+     * Download and write the blockchain to disk as JSON format.
+     * @param JsonPath  The path to write files to.
+     */
     @Override
-    public void writeBlockchainToJSON() {
-
+    public void writeBlockchainToJSON(String JsonPath) {
         // Ensure directory exists
-        File file = new File(StringConstants.JSON_PATH);
+        File file = new File(JsonPath);
         if (!file.exists()) {
             file.mkdirs();
         }
 
         // Retrieve files already on disk
-        List<File> jsonFiles = FileUtil.getFolderContents(StringConstants.JSON_PATH);
+        List<File> jsonFiles = FileUtil.getFolderContents(JsonPath);
 
         // Sort the list by numeric file name
         Collections.sort(jsonFiles, new FileComparator(StringConstants.JSON_FILE_EXT));
 
         // Retrieve the latest block on the blockchain
-        LatestBlock latestBlock = httpService.getLatestBlock();
-        Block latestNetworkBlock = httpService.getBlockByHash(latestBlock.getHash());
+        LatestBlock latestBlock = blockchainHttpService.getLatestBlock();
+        Block latestNetworkBlock = blockchainHttpService.getBlockByHash(latestBlock.getHash());
 
-        Block genesisBlock = httpService.getBlockByHash(StringConstants.GENESIS_BLOCK);
+        initialiseDownload(jsonFiles, latestNetworkBlock);
+    }
+
+    /**
+     * Initialise the blockchain download.
+     * @param jsonFiles             The existing files retrieved from disk.
+     * @param latestNetworkBlock    The latest block from the blockchain.
+     */
+    public void initialiseDownload(List<File> jsonFiles, Block latestNetworkBlock) {
+        Block genesisBlock = blockchainHttpService.getBlockByHash(StringConstants.GENESIS_BLOCK_HASH);
 
         if (jsonFiles.isEmpty()) {
             log.info(StringConstants.LINE_BREAK);
@@ -69,25 +80,20 @@ public class FetcherServiceImpl implements IFetcherService {
 
             latestBlockOnDisk = getLatestBlockOnDisk(jsonFiles);
 
-            if (latestBlock.getBlock_index() == latestBlockOnDisk.getBlock_index()) {
+            if (latestNetworkBlock.getBlock_index() == latestBlockOnDisk.getBlock_index()) {
                 log.info("Already up to date.");
             } else {
                 downloadBlocks(latestNetworkBlock, latestBlockOnDisk.getBlock_index());
             }
-
-            if (resume) {
-                Block earliestBlockOnDisk = getEarliestBlockOnDisk(jsonFiles);
-                if (earliestBlockOnDisk.getBlock_index() > genesisBlock.getBlock_index()) {
-                    count = 0;
-                    log.info(StringConstants.LINE_BREAK);
-                    log.info("Continuing blockchain history download. Feel free to cancel this process.");
-                    log.info(StringConstants.LINE_BREAK);
-
-                    Block previousBlock = httpService.getBlockByHash(earliestBlockOnDisk.getPrev_block());
-                    downloadBlocks(previousBlock, genesisBlock.getBlock_index());
-                }
-            }
         }
+    }
+
+    /**
+     * Download and write the blockchain to disk as JSON format.
+     */
+    @Override
+    public void writeBlockchainToJSON() {
+        this.writeBlockchainToJSON(StringConstants.JSON_PATH);
     }
 
     /**
@@ -95,7 +101,7 @@ public class FetcherServiceImpl implements IFetcherService {
      * working backwards.
      * @param startBlock The block to start downloading from.
      */
-    private void downloadBlocks(Block startBlock, long stopIndex) {
+    public void downloadBlocks(Block startBlock, long stopIndex) {
 
         while (startBlock.getBlock_index() > stopIndex) {
             try {
@@ -110,7 +116,7 @@ public class FetcherServiceImpl implements IFetcherService {
                 log.info("Remaining Blocks: " + (index - stopIndex));
                 log.info(StringConstants.LINE_BREAK);
 
-                startBlock = httpService.getBlockByHash(startBlock.getPrev_block());
+                startBlock = blockchainHttpService.getBlockByHash(startBlock.getPrev_block());
 
                 count++;
             } catch (Exception e) {
@@ -155,29 +161,6 @@ public class FetcherServiceImpl implements IFetcherService {
         }
 
         block.setTx(filteredTransactions);
-    }
-
-    /**
-     * Get the earliest block on disk.
-     * Assumes the list of files are sorted from low to high.
-     *
-     * @param jsonFiles The files to search.
-     * @return          The earliest block.
-     */
-    private Block getEarliestBlockOnDisk(List<File> jsonFiles) {
-        Block earliestBlock = null;
-
-        if (jsonFiles != null && !jsonFiles.isEmpty()) {
-            File lastFile = jsonFiles.get(0);
-
-            try {
-                earliestBlock = mapper.readValue(lastFile, Block.class);
-            } catch (IOException e) {
-                log.error("Error getting earliest block", e);
-            }
-        }
-
-        return earliestBlock;
     }
 
     /**
