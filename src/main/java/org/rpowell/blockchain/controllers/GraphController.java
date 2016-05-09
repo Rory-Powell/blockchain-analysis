@@ -3,6 +3,7 @@ package org.rpowell.blockchain.controllers;
 import org.rpowell.blockchain.domain.Address;
 import org.rpowell.blockchain.services.IGraphService;
 import org.rpowell.blockchain.util.graph.DatabaseForm;
+import org.rpowell.blockchain.util.graph.SearchForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,8 +59,17 @@ public class GraphController {
         } else {
             model.addAttribute("isPopulated", true);
         }
-
+        
+        addSearchForm(model);
         return "index";
+    }
+
+    /**
+     * The search endpoint.
+     */
+    @RequestMapping(value = "/search", method = RequestMethod.POST)
+    public String search(@ModelAttribute SearchForm searchForm){
+        return "redirect:/address/" + searchForm.getSearchAddress();
     }
 
     /**
@@ -70,6 +80,7 @@ public class GraphController {
     @RequestMapping(value = "/addresses", method = RequestMethod.GET)
     public String addresses(Model model){
         model.addAttribute("addresses", graphService.getAllAddresses());
+        addSearchForm(model);
         log.info("Returning all addresses");
         return "addresses";
     }
@@ -82,6 +93,7 @@ public class GraphController {
     @RequestMapping(value = "/owners", method = RequestMethod.GET)
     public String owners(Model model){
         model.addAttribute("owners", graphService.getAllOwners());
+        addSearchForm(model);
         log.info("Returning all owners");
         return "owners";
     }
@@ -98,6 +110,7 @@ public class GraphController {
         List<Address> associatedAddresses = graphService.getAssociatedAddresses(id);
         model.addAttribute("associated", associatedAddresses);
         model.addAttribute("associatedCount", associatedAddresses.size());
+        addSearchForm(model);
         return "address";
     }
 
@@ -120,5 +133,13 @@ public class GraphController {
         graphService.updateDatabase();
         dbUpdated = true;
         return "redirect:/";
+    }
+
+    /**
+     * Utility method for adding the required search attribute to a model.
+     * @param model The model.
+     */
+    public void addSearchForm(Model model) {
+        model.addAttribute("searchForm", new SearchForm());
     }
 }
