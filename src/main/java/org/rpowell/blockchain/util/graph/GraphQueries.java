@@ -4,7 +4,7 @@ import org.neo4j.graphdb.Label;
 
 import static org.rpowell.blockchain.util.graph.GraphConstants.*;
 
-public class CypherQueries {
+public class GraphQueries {
 
     /**
      * The cypher query used to get the immediate community of a given address.

@@ -18,8 +18,9 @@ public interface IGraphService {
 
     int getTransactionCount();
 
-    void shutdownServer();
+    void updateDatabase();
 
-    void startServer();
+    void populateDatabase(int blockCount);
 
+    int getCurrentBlockCount();
 }

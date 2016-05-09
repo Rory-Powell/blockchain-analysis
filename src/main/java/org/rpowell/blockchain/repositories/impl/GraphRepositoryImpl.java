@@ -2,8 +2,8 @@ package org.rpowell.blockchain.repositories.impl;
 
 import org.rpowell.blockchain.domain.*;
 import org.rpowell.blockchain.services.INeo4jHttpService;
-import org.rpowell.blockchain.util.graph.CypherQueries;
-import org.rpowell.blockchain.util.graph.QueryResponse;
+import org.rpowell.blockchain.util.graph.GraphQueries;
+import org.rpowell.blockchain.util.graph.GraphQueryResponse;
 import org.rpowell.blockchain.repositories.IGraphRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,37 +23,37 @@ public class GraphRepositoryImpl implements IGraphRepository {
     protected GraphRepositoryImpl() {}
 
     public int getAddressCount() {
-        ResponseEntity<QueryResponse> response = neo4jHttpService
-                .queryDatabase(CypherQueries.addressCountQuery(), QueryResponse.class);
+        ResponseEntity<GraphQueryResponse> response = neo4jHttpService
+                .queryDatabase(GraphQueries.addressCountQuery(), GraphQueryResponse.class);
 
         return extractCount(response);
     }
 
     public int getTransactionCount() {
-        ResponseEntity<QueryResponse> response = neo4jHttpService
-                .queryDatabase(CypherQueries.transactionCountQuery(), QueryResponse.class);
+        ResponseEntity<GraphQueryResponse> response = neo4jHttpService
+                .queryDatabase(GraphQueries.transactionCountQuery(), GraphQueryResponse.class);
 
         return extractCount(response);
     }
 
     public int getOwnerCount() {
-        ResponseEntity<QueryResponse> response = neo4jHttpService
-                .queryDatabase(CypherQueries.ownerCountQuery(), QueryResponse.class);
+        ResponseEntity<GraphQueryResponse> response = neo4jHttpService
+                .queryDatabase(GraphQueries.ownerCountQuery(), GraphQueryResponse.class);
 
         return extractCount(response);
     }
 
     public int getNodeCount() {
-        ResponseEntity<QueryResponse> response = neo4jHttpService
-                .queryDatabase(CypherQueries.nodeCountQuery(), QueryResponse.class);
+        ResponseEntity<GraphQueryResponse> response = neo4jHttpService
+                .queryDatabase(GraphQueries.nodeCountQuery(), GraphQueryResponse.class);
 
         return extractCount(response);
     }
 
     public List<Address> getAssociatedAddresses(String address) {
         // Get the wallets associated with this address
-        ResponseEntity<QueryResponse> response = neo4jHttpService
-                .queryDatabase(CypherQueries.ownerQuery(address), QueryResponse.class);
+        ResponseEntity<GraphQueryResponse> response = neo4jHttpService
+                .queryDatabase(GraphQueries.ownerQuery(address), GraphQueryResponse.class);
 
         // Use set for unique answers
         Set<Address> addressSet = new HashSet<>();
@@ -64,8 +64,8 @@ public class GraphRepositoryImpl implements IGraphRepository {
             int walletId = values.get(0);
 
             // Get all the addresses in that wallet
-            ResponseEntity<QueryResponse> response1 = neo4jHttpService
-                    .queryDatabase(CypherQueries.addressesOfOwnerQuery(walletId), QueryResponse.class);
+            ResponseEntity<GraphQueryResponse> response1 = neo4jHttpService
+                    .queryDatabase(GraphQueries.addressesOfOwnerQuery(walletId), GraphQueryResponse.class);
 
             // Add them to the set
             for (Map map1 : getDataMaps(response1)) {
@@ -89,8 +89,8 @@ public class GraphRepositoryImpl implements IGraphRepository {
      * @return  A resource iterator of address nodes.
      */
     public List<Address> getAllAddresses() {
-        ResponseEntity<QueryResponse> response = neo4jHttpService
-                .queryDatabase(CypherQueries.addressesQuery(1000), QueryResponse.class);
+        ResponseEntity<GraphQueryResponse> response = neo4jHttpService
+                .queryDatabase(GraphQueries.addressesQuery(1000), GraphQueryResponse.class);
 
         List<Address> addresses = new ArrayList<>();
 
@@ -104,7 +104,7 @@ public class GraphRepositoryImpl implements IGraphRepository {
         return addresses;
     }
 
-    private int extractCount(ResponseEntity<QueryResponse> response) {
+    private int extractCount(ResponseEntity<GraphQueryResponse> response) {
         List<Map> maps = getDataMaps(response);
         Map map = maps.get(0);
 
@@ -112,8 +112,8 @@ public class GraphRepositoryImpl implements IGraphRepository {
         return results.get(0);
     }
 
-    private List<Map> getDataMaps(ResponseEntity<QueryResponse> responseEntity) {
-        QueryResponse addressesResponse = responseEntity.getBody();
+    private List<Map> getDataMaps(ResponseEntity<GraphQueryResponse> responseEntity) {
+        GraphQueryResponse addressesResponse = responseEntity.getBody();
 
         ArrayList results = (ArrayList) addressesResponse.getResults();
         Map result = (Map) results.get(0);

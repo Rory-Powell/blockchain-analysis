@@ -8,9 +8,7 @@ import org.rpowell.blockchain.domain.LatestBlock;
 import org.rpowell.blockchain.services.IBlockchainHttpService;
 import org.rpowell.blockchain.util.constant.StringConstants;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -52,6 +50,6 @@ public class FetcherServiceImplTest {
         fetcherService.writeBlockchainToJSON();
 
         // Then
-        verify(fetcherService, times(1)).downloadBlocks(any(), anyLong());
+        verify(fetcherService, times(1)).downloadBlocks(any(), anyLong(), anyInt());
     }
 }

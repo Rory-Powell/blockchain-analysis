@@ -10,8 +10,7 @@ public interface IFetcherService {
 
     void writeBlockchainToJSON();
 
-    void writeBlockchainToJSON(String JsonPath);
+    void writeBlockchainToJSON(int blockCount);
 
-    void downloadBlocks(Block startBlock, long stopIndex);
-
+    void downloadBlocks(Block startBlock, long stopIndex, int blockCount);
 }

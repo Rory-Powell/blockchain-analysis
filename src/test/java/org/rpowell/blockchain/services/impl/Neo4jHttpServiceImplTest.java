@@ -9,7 +9,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.rpowell.blockchain.App;
 import org.rpowell.blockchain.services.INeo4jHttpService;
-import org.rpowell.blockchain.util.graph.QueryResponse;
+import org.rpowell.blockchain.util.graph.GraphQueryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.HttpMethod;
@@ -40,7 +40,7 @@ public class Neo4jHttpServiceImplTest {
     @Test
     public void queryDatabase() throws Exception {
         // When
-        neo4jHttpService.queryDatabase("Test", QueryResponse.class);
+        neo4jHttpService.queryDatabase("Test", GraphQueryResponse.class);
 
         // Then
         Mockito.verify(template, Mockito.times(1))

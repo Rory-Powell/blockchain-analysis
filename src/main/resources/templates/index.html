@@ -6,9 +6,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-  <title>Admin</title>
-
-  <!-- CSS-->
+  <title>Blockchain Analysis</title>
 
   <!--/*/ <th:block th:include="fragments/include :: head"></th:block> /*/-->
 
@@ -16,7 +14,6 @@
 
   <link href="../static/css/admin.css" rel="stylesheet" type="text/css"
         th:href="@{/css/admin.css}" />
-
 </head>
 
 <body>
@@ -24,58 +21,109 @@
 <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
 <div id="body" align="center">
 
-  <!-- Top tiles -->
-  <!-- Node -->
-  <div>
-    <div class="row tile_count" align="center">
-    <div class="animated flipInY col-md-3 tile_stats_count" align="center">
-      <div class="left" align="center"></div>
-      <div class="right" align="center">
-        <span class="count_top"><i class="fa fa-circle fa-lg"></i> Total Nodes</span>
-        <div class="count" th:text="${nodeCount}" ></div>
-      </div>
-    </div>
-
-    <!-- Addresses -->
-    <div class="animated flipInY col-md-3 tile_stats_count">
-      <div class="left"></div>
-      <div class="right">
-        <span class="count_top"><i class="fa fa-home fa-lg"></i> Total Addresses</span>
-        <div class="count" th:text="${addressCount}"></div>
-      </div>
-    </div>
-
-    <!-- Transactions -->
-    <div class="animated flipInY col-md-3 tile_stats_count">
-      <div class="left"></div>
-      <div class="right">
-        <span class="count_top"><i class="fa fa-btc fa-lg"></i> Total Transactions</span>
-        <div class="count" th:text="${transactionCount}"></div>
-      </div>
-    </div>
-
-    <!-- Owners -->
-    <div class="animated flipInY col-md-3 tile_stats_count">
-      <div class="left"></div>
-      <div class="right">
-        <span class="count_top"><i class="fa fa-user fa-lg"></i> Total Owners</span>
-        <div class="count" th:text="${ownerCount}"></div>
-      </div>
-    </div>
-
-  </div>
-  </div>
-
   <div class="container">
-    <div class="jumbotron">
-      <div class="row text-center">
-        <img src="../static/images/blockchain_logo_2.png" width="400"
-             th:src="@{/images/blockchain_logo_2.png}"/>
+
+    <div id="TopTiles">
+      <!-- Node -->
+      <div class="row tile_count" align="center">
+        <div class="animated flipInY col-md-3 tile_stats_count" align="center">
+          <div class="left" align="center"></div>
+          <div class="right" align="center">
+            <span class="count_top"><i class="fa fa-circle fa-lg"></i> Total Nodes</span>
+            <div class="count" th:text="${nodeCount}" ></div>
+          </div>
+        </div>
+
+        <!-- Addresses -->
+        <div class="animated flipInY col-md-3 tile_stats_count">
+          <div class="left"></div>
+          <div class="right">
+            <span class="count_top"><i class="fa fa-home fa-lg"></i> Total Addresses</span>
+            <div class="count" th:text="${addressCount}"></div>
+          </div>
+        </div>
+
+        <!-- Transactions -->
+        <div class="animated flipInY col-md-3 tile_stats_count">
+          <div class="left"></div>
+          <div class="right">
+            <span class="count_top"><i class="fa fa-btc fa-lg"></i> Total Transactions</span>
+            <div class="count" th:text="${transactionCount}"></div>
+          </div>
+        </div>
+
+        <!-- Owners -->
+        <div class="animated flipInY col-md-3 tile_stats_count">
+          <div class="left"></div>
+          <div class="right">
+            <span class="count_top"><i class="fa fa-user fa-lg"></i> Total Owners</span>
+            <div class="count" th:text="${ownerCount}"></div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="row">
+    <div class="voffset70"></div>
+
+    <div id="DataBaseOpsHolder">
+      <div class="col-md-3"></div>
+      <div class="col-md-6">
+
+        <div class="panel panel-default" id="DatabaseOps">
+          <div class="panel-heading">Database Operations</div>
+
+          <!-- Spacing -->
+          <div class="row voffset15"></div>
+
+          <div id="populateDB" th:if="${isPopulated == false}">
+            <div class="row">
+              <div class="col-md-3"></div>
+              <div class="col-md-6">
+
+                <div>
+                  <div>Latest block count is:</div>
+                  <div th:text="${currentBlockCount}"></div>
+                </div>
+
+                <div class="voffset10"></div>
+
+                <form action="#" th:action="@{/populateDB}" th:object="${databaseForm}" method="post">
+                  <label>Enter number of blocks to populate</label>
+                  <input type="text" th:field="*{count}" />
+                  <div class="voffset10"></div>
+                  <input type="submit" value="Populate Database" />
+                </form>
+
+                <div class="voffset10"></div>
+
+              </div>
+              <div class="col-md-3"></div>
+            </div>
+          </div>
+
+          <div id="updateDB" th:if="${isPopulated == true}">
+            <div class="row">
+              <div class="col-md-3"></div>
+              <div class="col-md-6">
+
+                <form action="#" th:action="@{/updateDB}" method="post">
+                  <input type="submit" value="Update Database" />
+                </form>
+
+                <!-- Spacing -->
+                <div class="row voffset15"></div>
+              </div>
+              <div class="col-md-3"></div>
+            </div>
+          </div>
+
+          <div class="panel-footer">
+          </div>
+
+        </div> <!-- End panel -->
+      </div>
+      <div class="col-md-3"></div>
+    </div>
 
   </div>
 

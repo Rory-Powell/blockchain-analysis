@@ -69,3 +69,7 @@ html,body{
 	text-align: center;
 }
 
+.voffset30  { margin-top: 30px; }
+.voffset70  { margin-top: 70px; }
+.voffset10  { margin-top: 10px; }
+.voffset15  { margin-top: 15px; }

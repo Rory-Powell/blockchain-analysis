@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashMap;
 import java.util.Map;
 
-public class QueryResponse {
+public class GraphQueryResponse {
 
     @JsonProperty("results")
     private Object results;

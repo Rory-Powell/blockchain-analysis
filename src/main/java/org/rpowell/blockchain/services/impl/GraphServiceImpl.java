@@ -1,20 +1,25 @@
 package org.rpowell.blockchain.services.impl;
 
 import org.rpowell.blockchain.domain.Address;
+import org.rpowell.blockchain.domain.LatestBlock;
 import org.rpowell.blockchain.repositories.IGraphRepository;
+import org.rpowell.blockchain.services.IBlockchainHttpService;
 import org.rpowell.blockchain.services.IFetcherService;
 import org.rpowell.blockchain.services.IGraphService;
 import org.rpowell.blockchain.services.IParseService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.*;
 
 @Service
 public class GraphServiceImpl implements IGraphService {
+
+    private static Logger log = LoggerFactory.getLogger(GraphServiceImpl.class);
 
     @Autowired
     private IGraphRepository graphRepository;
@@ -26,38 +31,73 @@ public class GraphServiceImpl implements IGraphService {
     private IFetcherService fetcherService;
 
     @Autowired
+    private IBlockchainHttpService blockchainHttpService;
+
+    @Autowired
     private Environment env;
 
-    protected GraphServiceImpl() {}
+    protected GraphServiceImpl() {
+        startDbServer();
+        registerShutdownHook();
+    }
 
+    @Override
     public List<Address> getAllAddresses() {
        return graphRepository.getAllAddresses();
     }
 
+    @Override
     public List<Address> getAssociatedAddresses(String address) {
         return graphRepository.getAssociatedAddresses(address);
     }
 
+    @Override
     public int getAddressCount() {
         return graphRepository.getAddressCount();
     }
 
+    @Override
     public int getTransactionCount() {
         return graphRepository.getTransactionCount();
     }
 
+    @Override
     public int getOwnerCount() {
         return graphRepository.getOwnerCount();
     }
 
+    @Override
     public int getNodeCount() {
         return graphRepository.getNodeCount();
+    }
+
+    @Override
+    public int getCurrentBlockCount() {
+        LatestBlock latestBlock = blockchainHttpService.getLatestBlock();
+        return (int) latestBlock.getBlock_index();
+    }
+
+    @Override
+    public void updateDatabase() {
+        shutdownDbServer();
+        fetcherService.writeBlockchainToJSON();
+        parseService.writeJSONToDB();
+        startDbServer();
+    }
+
+    @Override
+    public void populateDatabase(int blockCount) {
+        shutdownDbServer();
+        fetcherService.writeBlockchainToJSON(blockCount);
+        parseService.writeJSONToDB();
+        startDbServer();
     }
 
     /**
      * Shutdown the remote neo4j server.
      */
-    public void shutdownServer() {
+    private void shutdownDbServer() {
+        log.info("Stopping the Neo4j database server");
         String command = "/home/rpowell/apps/neo4j-community-2.3.3/bin/neo4j stop";
         executeCommand(command);
     }
@@ -65,7 +105,8 @@ public class GraphServiceImpl implements IGraphService {
     /**
      * Start the remote neo4j server.
      */
-    public void startServer() {
+    private void startDbServer() {
+        log.info("Starting the Neo4j database server");
         String command = "/home/rpowell/apps/neo4j-community-2.3.3/bin/neo4j start";
         executeCommand(command);
     }
@@ -91,10 +132,21 @@ public class GraphServiceImpl implements IGraphService {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error executing command", e);
         }
 
         return output.toString();
+    }
 
+    /**
+     * Registers a shutdown hook to stop the neo4j Database server.
+     */
+    private void registerShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                shutdownDbServer();
+            }
+        } );
     }
 }

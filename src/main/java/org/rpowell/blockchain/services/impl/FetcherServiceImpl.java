@@ -7,6 +7,7 @@ import org.rpowell.blockchain.util.file.FileComparator;
 import org.rpowell.blockchain.services.IFetcherService;
 import org.rpowell.blockchain.util.file.FileUtil;
 import org.rpowell.blockchain.util.constant.StringConstants;
+import org.rpowell.blockchain.util.graph.DownloadStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +39,7 @@ public class FetcherServiceImpl implements IFetcherService {
      * Download and write the blockchain to disk as JSON format.
      * @param JsonPath  The path to write files to.
      */
-    @Override
-    public void writeBlockchainToJSON(String JsonPath) {
+    public void writeBlockchainToJSON(String JsonPath, int blockCount) {
         // Ensure directory exists
         File file = new File(JsonPath);
         if (!file.exists()) {
@@ -56,7 +56,7 @@ public class FetcherServiceImpl implements IFetcherService {
         LatestBlock latestBlock = blockchainHttpService.getLatestBlock();
         Block latestNetworkBlock = blockchainHttpService.getBlockByHash(latestBlock.getHash());
 
-        initialiseDownload(jsonFiles, latestNetworkBlock);
+        initialiseDownload(jsonFiles, latestNetworkBlock, blockCount);
     }
 
     /**
@@ -64,7 +64,7 @@ public class FetcherServiceImpl implements IFetcherService {
      * @param jsonFiles             The existing files retrieved from disk.
      * @param latestNetworkBlock    The latest block from the blockchain.
      */
-    public void initialiseDownload(List<File> jsonFiles, Block latestNetworkBlock) {
+    public void initialiseDownload(List<File> jsonFiles, Block latestNetworkBlock, int blockCount) {
         Block genesisBlock = blockchainHttpService.getBlockByHash(StringConstants.GENESIS_BLOCK_HASH);
 
         if (jsonFiles.isEmpty()) {
@@ -72,7 +72,7 @@ public class FetcherServiceImpl implements IFetcherService {
             log.info("Starting blockchain download");
             log.info(StringConstants.LINE_BREAK);
 
-            downloadBlocks(latestNetworkBlock, genesisBlock.getBlock_index());
+            downloadBlocks(latestNetworkBlock, genesisBlock.getBlock_index(), blockCount);
         } else {
             log.info(StringConstants.LINE_BREAK);
             log.info("Downloading new blocks. Please let this process complete.");
@@ -83,7 +83,7 @@ public class FetcherServiceImpl implements IFetcherService {
             if (latestNetworkBlock.getBlock_index() == latestBlockOnDisk.getBlock_index()) {
                 log.info("Already up to date.");
             } else {
-                downloadBlocks(latestNetworkBlock, latestBlockOnDisk.getBlock_index());
+                downloadBlocks(latestNetworkBlock, latestBlockOnDisk.getBlock_index(), blockCount);
             }
         }
     }
@@ -93,7 +93,12 @@ public class FetcherServiceImpl implements IFetcherService {
      */
     @Override
     public void writeBlockchainToJSON() {
-        this.writeBlockchainToJSON(StringConstants.JSON_PATH);
+        writeBlockchainToJSON(StringConstants.JSON_PATH, DownloadStatus.FULL);
+    }
+
+    @Override
+    public void writeBlockchainToJSON(int blockCount) {
+        writeBlockchainToJSON(StringConstants.JSON_PATH, blockCount);
     }
 
     /**
@@ -101,8 +106,9 @@ public class FetcherServiceImpl implements IFetcherService {
      * working backwards.
      * @param startBlock The block to start downloading from.
      */
-    public void downloadBlocks(Block startBlock, long stopIndex) {
-
+    public void downloadBlocks(Block startBlock, long stopIndex, int blockCount) {
+        int downloadCount = 0;
+        count = 0;
         while (startBlock.getBlock_index() > stopIndex) {
             try {
                 long index = startBlock.getBlock_index();
@@ -113,12 +119,20 @@ public class FetcherServiceImpl implements IFetcherService {
                 mapper.writeValue(newFile, startBlock);
                 log.info("Writing file " + newFile.toString());
                 log.info("Blocks downloaded: " + count);
-                log.info("Remaining Blocks: " + (index - stopIndex));
+                log.info("Total Blocks: " + (index - stopIndex));
                 log.info(StringConstants.LINE_BREAK);
 
                 startBlock = blockchainHttpService.getBlockByHash(startBlock.getPrev_block());
 
                 count++;
+
+                // Limit the download if required
+                if (blockCount != DownloadStatus.FULL) {
+                    downloadCount++;
+                    if (downloadCount == blockCount) {
+                        break;
+                    }
+                }
             } catch (Exception e) {
                 log.error("Error downloading block", e);
                 log.error("Sleeping for one minute", e);

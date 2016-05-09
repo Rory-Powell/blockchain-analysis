@@ -11,4 +11,7 @@ public interface IBlockchainHttpService {
     LatestBlock getLatestBlock();
 
     Address getAddress(String address);
+
+    int getCurrentBlockCount();
+
 }
