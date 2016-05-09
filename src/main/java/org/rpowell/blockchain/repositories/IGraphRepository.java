@@ -1,6 +1,7 @@
 package org.rpowell.blockchain.repositories;
 
 import org.rpowell.blockchain.domain.Address;
+import org.rpowell.blockchain.domain.Owner;
 
 import java.util.List;
 
@@ -17,5 +18,7 @@ public interface IGraphRepository {
     int getNodeCount();
 
     int getTransactionCount();
+
+    List<Owner> getAllOwners();
 
 }

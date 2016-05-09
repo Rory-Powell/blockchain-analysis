@@ -1,7 +1,8 @@
 package org.rpowell.blockchain.repositories.impl;
 
 import org.rpowell.blockchain.domain.*;
-import org.rpowell.blockchain.services.INeo4jHttpService;
+import org.rpowell.blockchain.services.http.INeo4jHttpService;
+import org.rpowell.blockchain.util.graph.GraphConstants;
 import org.rpowell.blockchain.util.graph.GraphQueries;
 import org.rpowell.blockchain.util.graph.GraphQueryResponse;
 import org.rpowell.blockchain.repositories.IGraphRepository;
@@ -86,7 +87,7 @@ public class GraphRepositoryImpl implements IGraphRepository {
 
     /**
      * Get all the stored nodes with an address label.
-     * @return  A resource iterator of address nodes.
+     * @return  A list of addresses.
      */
     public List<Address> getAllAddresses() {
         ResponseEntity<GraphQueryResponse> response = neo4jHttpService
@@ -102,6 +103,28 @@ public class GraphRepositoryImpl implements IGraphRepository {
         }
 
         return addresses;
+    }
+
+    /***
+     * Get all the stored nodes with an owner label.
+     * @return A list of owners.
+     */
+    public List<Owner> getAllOwners() {
+        ResponseEntity<GraphQueryResponse> response = neo4jHttpService
+                .queryDatabase(GraphQueries.realOwnersQuery(1000), GraphQueryResponse.class);
+
+        List<Owner> owners = new ArrayList<>();
+
+        for (Map map : getDataMaps(response)) {
+            Owner owner = new Owner();
+            List<Map> values = (List<Map>) map.get("row");
+            Map<String, String> entries = values.get(0);
+            owner.setBitcoinaddress(entries.get(GraphConstants.Props.ADDR));
+            owner.setNick(entries.get(GraphConstants.Props.NICKNAME));
+            owners.add(owner);
+        }
+
+        return owners;
     }
 
     private int extractCount(ResponseEntity<GraphQueryResponse> response) {

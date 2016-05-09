@@ -1,6 +1,7 @@
 package org.rpowell.blockchain.services;
 
 import org.rpowell.blockchain.domain.Address;
+import org.rpowell.blockchain.domain.Owner;
 
 import java.util.List;
 
@@ -23,4 +24,6 @@ public interface IGraphService {
     void populateDatabase(int blockCount);
 
     int getCurrentBlockCount();
+
+    List<Owner> getAllOwners();
 }

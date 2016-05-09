@@ -1,4 +1,4 @@
-package org.rpowell.blockchain.services;
+package org.rpowell.blockchain.services.http;
 
 import org.rpowell.blockchain.domain.Address;
 import org.rpowell.blockchain.domain.Block;

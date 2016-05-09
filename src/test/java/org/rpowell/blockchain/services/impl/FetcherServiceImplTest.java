@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.mockito.*;
 import org.rpowell.blockchain.domain.Block;
 import org.rpowell.blockchain.domain.LatestBlock;
-import org.rpowell.blockchain.services.IBlockchainHttpService;
+import org.rpowell.blockchain.services.http.IBlockchainHttpService;
 import org.rpowell.blockchain.util.constant.StringConstants;
 
 import static org.mockito.Matchers.*;

@@ -1,4 +1,4 @@
-package org.rpowell.blockchain.services;
+package org.rpowell.blockchain.services.http;
 
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;

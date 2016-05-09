@@ -29,6 +29,14 @@ public class GraphQueries {
     }
 
     /**
+     * the cypher query used to return all known real owners.
+     * @param limit The limit of number of owners to return.
+     * @return      The query.
+     */
+    public static String realOwnersQuery(int limit) {
+        return "Match (n:Owner) return n LIMIT " + limit;
+    }
+    /**
      * The Cypher query used to get the owner ID's of a given address.
      * @param address   The address to find owner for.
      * @return          The query.

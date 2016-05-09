@@ -2,7 +2,7 @@ package org.rpowell.blockchain.services.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.rpowell.blockchain.domain.*;
-import org.rpowell.blockchain.services.IBlockchainHttpService;
+import org.rpowell.blockchain.services.http.IBlockchainHttpService;
 import org.rpowell.blockchain.util.file.FileComparator;
 import org.rpowell.blockchain.services.IFetcherService;
 import org.rpowell.blockchain.util.file.FileUtil;

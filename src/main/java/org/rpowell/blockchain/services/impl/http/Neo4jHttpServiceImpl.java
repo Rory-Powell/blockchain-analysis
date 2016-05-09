@@ -1,7 +1,7 @@
-package org.rpowell.blockchain.services.impl;
+package org.rpowell.blockchain.services.impl.http;
 
-import org.rpowell.blockchain.services.BaseHttpService;
-import org.rpowell.blockchain.services.INeo4jHttpService;
+import org.rpowell.blockchain.services.http.BaseHttpService;
+import org.rpowell.blockchain.services.http.INeo4jHttpService;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 

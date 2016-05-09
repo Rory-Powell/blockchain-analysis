@@ -1,13 +1,12 @@
-package org.rpowell.blockchain.services.impl;
+package org.rpowell.blockchain.services.impl.http;
 
 import org.rpowell.blockchain.domain.Address;
 import org.rpowell.blockchain.domain.Block;
 import org.rpowell.blockchain.domain.LatestBlock;
-import org.rpowell.blockchain.services.BaseHttpService;
-import org.rpowell.blockchain.services.IBlockchainHttpService;
+import org.rpowell.blockchain.services.http.BaseHttpService;
+import org.rpowell.blockchain.services.http.IBlockchainHttpService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.integration.IntegrationAutoConfiguration;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;

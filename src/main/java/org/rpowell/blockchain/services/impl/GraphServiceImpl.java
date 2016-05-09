@@ -2,8 +2,9 @@ package org.rpowell.blockchain.services.impl;
 
 import org.rpowell.blockchain.domain.Address;
 import org.rpowell.blockchain.domain.LatestBlock;
+import org.rpowell.blockchain.domain.Owner;
 import org.rpowell.blockchain.repositories.IGraphRepository;
-import org.rpowell.blockchain.services.IBlockchainHttpService;
+import org.rpowell.blockchain.services.http.IBlockchainHttpService;
 import org.rpowell.blockchain.services.IFetcherService;
 import org.rpowell.blockchain.services.IGraphService;
 import org.rpowell.blockchain.services.IParseService;
@@ -44,6 +45,11 @@ public class GraphServiceImpl implements IGraphService {
     @Override
     public List<Address> getAllAddresses() {
        return graphRepository.getAllAddresses();
+    }
+
+    @Override
+    public List<Owner> getAllOwners() {
+        return graphRepository.getAllOwners();
     }
 
     @Override

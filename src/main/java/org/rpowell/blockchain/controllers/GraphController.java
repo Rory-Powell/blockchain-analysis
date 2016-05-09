@@ -75,6 +75,18 @@ public class GraphController {
     }
 
     /**
+     * The owners screen.
+     * @param model The model.
+     * @return      The HTML file name.
+     */
+    @RequestMapping(value = "/owners", method = RequestMethod.GET)
+    public String owners(Model model){
+        model.addAttribute("owners", graphService.getAllOwners());
+        log.info("Returning all owners");
+        return "owners";
+    }
+
+    /**
      * The address screen.
      * @param id    The hash of the address.
      * @param model The model.

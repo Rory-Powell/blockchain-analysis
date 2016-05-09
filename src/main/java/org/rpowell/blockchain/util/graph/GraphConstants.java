@@ -16,6 +16,7 @@ public class GraphConstants {
     public static class Labels {
 
         public static final Label WALLET = DynamicLabel.label("Wallet");
+        public static final Label OWNER = DynamicLabel.label("Owner");
         public static final Label ADDRESS = DynamicLabel.label("Address");
         public static final Label TRANSACTION = DynamicLabel.label("Transaction");
 
@@ -41,6 +42,9 @@ public class GraphConstants {
         // Output
         public static String OUTPUT_NUM = "OutputNum";
         public static String TX_INDEX = "TxIndex";
+
+        // Owner properties
+        public static String NICKNAME = "NickName";
     }
 
     /**
@@ -50,6 +54,7 @@ public class GraphConstants {
 
         public static RelationshipType WITHDRAW = DynamicRelationshipType.withName("Withdraw");
         public static RelationshipType SAME_OWNER = DynamicRelationshipType.withName("Same_Owner");
+        public static RelationshipType OWNED_BY = DynamicRelationshipType.withName("OWNED_BY");
         public static RelationshipType DEPOSIT = DynamicRelationshipType.withName("Deposit");
 
     }

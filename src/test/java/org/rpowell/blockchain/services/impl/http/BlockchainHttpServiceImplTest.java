@@ -1,4 +1,4 @@
-package org.rpowell.blockchain.services.impl;
+package org.rpowell.blockchain.services.impl.http;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +11,7 @@ import org.rpowell.blockchain.App;
 import org.rpowell.blockchain.domain.Address;
 import org.rpowell.blockchain.domain.Block;
 import org.rpowell.blockchain.domain.LatestBlock;
-import org.rpowell.blockchain.services.IBlockchainHttpService;
+import org.rpowell.blockchain.services.http.IBlockchainHttpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;

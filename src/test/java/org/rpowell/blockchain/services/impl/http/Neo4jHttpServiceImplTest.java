@@ -1,4 +1,4 @@
-package org.rpowell.blockchain.services.impl;
+package org.rpowell.blockchain.services.impl.http;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -8,7 +8,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.rpowell.blockchain.App;
-import org.rpowell.blockchain.services.INeo4jHttpService;
+import org.rpowell.blockchain.services.http.INeo4jHttpService;
 import org.rpowell.blockchain.util.graph.GraphQueryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;

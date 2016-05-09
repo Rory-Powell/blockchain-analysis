@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+
+    <title>Owners</title>
+    <!--/*/ <th:block th:include="fragments/include :: head"></th:block> /*/-->
+
+</head>
+<body>
+<div id="holder">
+    <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+    <div id="body">
+
+        <div class="container">
+            <div th:if="${not #lists.isEmpty(owners)}">
+                <h2>Owners</h2>
+
+                <table class="table table-striped">
+                    <tr>
+                        <th>Owner Nickname</th>
+                        <th>Address</th>
+                        <th>View</th>
+                    </tr>
+                    <tr th:each="owner : ${owners}">
+                        <td th:text="${owner.nick}">Owner Nickname</td>
+                        <td th:text="${owner.bitcoinaddress}">Address</td>
+                        <td><a th:href="${ '/address/' + owner.bitcoinaddress}">View</a></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!--/*/ <th:block th:include="fragments/footer :: footer"></th:block> /*/-->
+</div>
+</body>
+</html>

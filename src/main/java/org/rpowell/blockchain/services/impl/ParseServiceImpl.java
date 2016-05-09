@@ -4,10 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
-import org.rpowell.blockchain.domain.Block;
-import org.rpowell.blockchain.domain.Input;
-import org.rpowell.blockchain.domain.Output;
-import org.rpowell.blockchain.domain.Transaction;
+import org.rpowell.blockchain.domain.*;
+import org.rpowell.blockchain.services.http.IOwnerHttpService;
 import org.rpowell.blockchain.util.file.FileComparator;
 import org.rpowell.blockchain.controllers.GraphController;
 import org.rpowell.blockchain.services.IParseService;
@@ -15,6 +13,7 @@ import org.rpowell.blockchain.util.file.FileUtil;
 import org.rpowell.blockchain.util.constant.StringConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
@@ -33,10 +32,14 @@ public class ParseServiceImpl implements IParseService {
 
     private Map<String, Long> addressIndex = new HashMap<>();
 
+    @Autowired
+    private IOwnerHttpService ownerHttpService;
+
     protected ParseServiceImpl() {}
 
     @Override
     public void writeJSONToDB() {
+        boolean initialInsert = true;
         BatchInserter batchInserter = null;
         try {
             List<File> jsonFiles = FileUtil.getFolderContents(StringConstants.JSON_PATH);
@@ -47,6 +50,7 @@ public class ParseServiceImpl implements IParseService {
 
             // If there have been blocks previously downloaded / persisted - get the new ones
             if (FetcherServiceImpl.latestBlockOnDisk != null) {
+                initialInsert = false;
                 // Get the previously stored latest block on disk
                 int latestBlockIndex = (int) FetcherServiceImpl.latestBlockOnDisk.getBlock_index();
 
@@ -115,6 +119,10 @@ public class ParseServiceImpl implements IParseService {
                 // Store the results to the database
                 writeBatch(batchInserter);
             }
+
+            if (initialInsert) {
+                persistOwners();
+            }
         } catch (Exception e) {
             log.error("Error writing to database");
         } finally {
@@ -123,6 +131,43 @@ public class ParseServiceImpl implements IParseService {
                 writeBatch(batchInserter);
                 GraphController.dbUpdated = true;
             }
+        }
+    }
+
+    /**
+     * Write the real world owners to the database.
+     */
+    private void persistOwners() {
+        BatchInserter batchInserter;
+        try {
+            batchInserter = getBatchInserter();
+
+            List<Owner> owners = ownerHttpService.getOwners();
+
+            for (Owner owner : owners) {
+                Long addressNode = addressIndex.get(owner.getBitcoinaddress());
+
+                // Check if node already exists
+                if (addressNode == null) {
+                    Map<String, Object> addressProperties = new HashMap<>();
+                    addressProperties.put(Props.ADDR, owner.getBitcoinaddress());
+                    addressNode = batchInserter.createNode(addressProperties, Labels.ADDRESS);
+                    addressIndex.put(owner.getBitcoinaddress(), addressNode);
+                }
+
+                // Owner properties
+                Map<String, Object> ownerProps = new HashMap<>();
+                ownerProps.put(Props.NICKNAME, owner.getNick());
+                ownerProps.put(Props.ADDR, owner.getBitcoinaddress());
+
+                // Create relationship between address and it's owner
+                Long ownerNode = batchInserter.createNode(ownerProps, Labels.OWNER);
+                batchInserter.createRelationship(addressNode, ownerNode, Relationships.OWNED_BY, null);
+            }
+
+            writeBatch(batchInserter);
+        } catch (Exception e) {
+            log.error("Error persisting real world owners", e);
         }
     }
 
@@ -233,9 +278,9 @@ public class ParseServiceImpl implements IParseService {
             @Override
             public void run() {
                 if (!isShutdown) {
-                    log.info("Initiating graph shutdown.... this may take quite a while.");
+                    log.info("Initiating embedded database shutdown.... this may take quite a while.");
                     batchInserter.shutdown();
-                    log.info("Graph is now shutdown and ready to use");
+                    log.info("Embedded database is now shutdown.");
                 }
             }
         } );
