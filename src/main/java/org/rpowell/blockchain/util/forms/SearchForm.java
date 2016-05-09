@@ -1,4 +1,4 @@
-package org.rpowell.blockchain.util.graph;
+package org.rpowell.blockchain.util.forms;
 
 public class SearchForm {
 

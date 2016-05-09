@@ -2,8 +2,8 @@ package org.rpowell.blockchain.controllers;
 
 import org.rpowell.blockchain.domain.Address;
 import org.rpowell.blockchain.services.IGraphService;
-import org.rpowell.blockchain.util.graph.DatabaseForm;
-import org.rpowell.blockchain.util.graph.SearchForm;
+import org.rpowell.blockchain.util.forms.DatabaseForm;
+import org.rpowell.blockchain.util.forms.SearchForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +59,7 @@ public class GraphController {
         } else {
             model.addAttribute("isPopulated", true);
         }
-        
+
         addSearchForm(model);
         return "index";
     }

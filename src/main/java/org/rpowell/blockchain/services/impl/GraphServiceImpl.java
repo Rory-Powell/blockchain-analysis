@@ -8,10 +8,10 @@ import org.rpowell.blockchain.services.http.IBlockchainHttpService;
 import org.rpowell.blockchain.services.IFetcherService;
 import org.rpowell.blockchain.services.IGraphService;
 import org.rpowell.blockchain.services.IParseService;
+import org.rpowell.blockchain.util.PropertyLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -34,8 +34,7 @@ public class GraphServiceImpl implements IGraphService {
     @Autowired
     private IBlockchainHttpService blockchainHttpService;
 
-    @Autowired
-    private Environment env;
+    private String DB_PATH = PropertyLoader.loadProperty("database.path");
 
     protected GraphServiceImpl() {
         startDbServer();
@@ -104,7 +103,7 @@ public class GraphServiceImpl implements IGraphService {
      */
     private void shutdownDbServer() {
         log.info("Stopping the Neo4j database server");
-        String command = "/home/rpowell/apps/neo4j-community-2.3.3/bin/neo4j stop";
+        String command = DB_PATH + "bin/neo4j stop";
         executeCommand(command);
     }
 
@@ -113,7 +112,7 @@ public class GraphServiceImpl implements IGraphService {
      */
     private void startDbServer() {
         log.info("Starting the Neo4j database server");
-        String command = "/home/rpowell/apps/neo4j-community-2.3.3/bin/neo4j start";
+        String command = DB_PATH + "bin/neo4j start";
         executeCommand(command);
     }
 

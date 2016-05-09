@@ -3,10 +3,11 @@ package org.rpowell.blockchain.services.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.rpowell.blockchain.domain.*;
 import org.rpowell.blockchain.services.http.IBlockchainHttpService;
+import org.rpowell.blockchain.util.PropertyLoader;
 import org.rpowell.blockchain.util.file.FileComparator;
 import org.rpowell.blockchain.services.IFetcherService;
 import org.rpowell.blockchain.util.file.FileUtil;
-import org.rpowell.blockchain.util.constant.StringConstants;
+import org.rpowell.blockchain.util.StringConstants;
 import org.rpowell.blockchain.util.graph.DownloadStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,8 @@ public class FetcherServiceImpl implements IFetcherService {
 
     @Autowired
     private IBlockchainHttpService blockchainHttpService;
+
+    private String JSON_PATH = PropertyLoader.loadProperty("json.path");
 
     private final ObjectMapper mapper = new ObjectMapper();
     private int count = 0;
@@ -93,12 +96,12 @@ public class FetcherServiceImpl implements IFetcherService {
      */
     @Override
     public void writeBlockchainToJSON() {
-        writeBlockchainToJSON(StringConstants.JSON_PATH, DownloadStatus.FULL);
+        writeBlockchainToJSON(JSON_PATH, DownloadStatus.FULL);
     }
 
     @Override
     public void writeBlockchainToJSON(int blockCount) {
-        writeBlockchainToJSON(StringConstants.JSON_PATH, blockCount);
+        writeBlockchainToJSON(JSON_PATH, blockCount);
     }
 
     /**
@@ -112,7 +115,7 @@ public class FetcherServiceImpl implements IFetcherService {
         while (startBlock.getBlock_index() > stopIndex) {
             try {
                 long index = startBlock.getBlock_index();
-                File newFile = new File(StringConstants.JSON_PATH + index + StringConstants.JSON_FILE_EXT);
+                File newFile = new File(JSON_PATH + index + StringConstants.JSON_FILE_EXT);
 
                 filterInvalidTransactions(startBlock);
 

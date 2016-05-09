@@ -6,11 +6,12 @@ import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 import org.rpowell.blockchain.domain.*;
 import org.rpowell.blockchain.services.http.IOwnerHttpService;
+import org.rpowell.blockchain.util.PropertyLoader;
 import org.rpowell.blockchain.util.file.FileComparator;
 import org.rpowell.blockchain.controllers.GraphController;
 import org.rpowell.blockchain.services.IParseService;
 import org.rpowell.blockchain.util.file.FileUtil;
-import org.rpowell.blockchain.util.constant.StringConstants;
+import org.rpowell.blockchain.util.StringConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,10 @@ public class ParseServiceImpl implements IParseService {
     @Autowired
     private IOwnerHttpService ownerHttpService;
 
+    private String DB_PATH = PropertyLoader.loadProperty("database.path");
+
+    private String JSON_PATH = PropertyLoader.loadProperty("json.path");
+
     protected ParseServiceImpl() {}
 
     @Override
@@ -42,7 +47,7 @@ public class ParseServiceImpl implements IParseService {
         boolean initialInsert = true;
         BatchInserter batchInserter = null;
         try {
-            List<File> jsonFiles = FileUtil.getFolderContents(StringConstants.JSON_PATH);
+            List<File> jsonFiles = FileUtil.getFolderContents(JSON_PATH);
             // Sort the files from earliest to latest
             Collections.sort(jsonFiles, new FileComparator(StringConstants.JSON_FILE_EXT));
 
@@ -260,7 +265,8 @@ public class ParseServiceImpl implements IParseService {
             put("neostore.propertystore.db.strings.mapped_memory","1G");
         }};
 
-        File dbPath = FileUtils.getFile(StringConstants.DB_PATH);
+
+        File dbPath = FileUtils.getFile(DB_PATH + "data/graph.db");
 
         BatchInserter inserter = BatchInserters.inserter(dbPath, config);
         isShutdown = false; // Inserter retrieved successfully, signal active
