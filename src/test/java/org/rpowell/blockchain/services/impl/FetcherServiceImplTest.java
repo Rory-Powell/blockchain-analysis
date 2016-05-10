@@ -7,7 +7,7 @@ import org.mockito.*;
 import org.rpowell.blockchain.domain.Block;
 import org.rpowell.blockchain.domain.LatestBlock;
 import org.rpowell.blockchain.services.http.IBlockchainHttpService;
-import org.rpowell.blockchain.util.StringConstants;
+import org.rpowell.blockchain.util.common.StringConstants;
 
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.times;

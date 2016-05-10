@@ -8,7 +8,7 @@ import org.rpowell.blockchain.services.http.IBlockchainHttpService;
 import org.rpowell.blockchain.services.IFetcherService;
 import org.rpowell.blockchain.services.IGraphService;
 import org.rpowell.blockchain.services.IParseService;
-import org.rpowell.blockchain.util.PropertyLoader;
+import org.rpowell.blockchain.util.common.PropertyLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

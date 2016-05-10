@@ -1,4 +1,4 @@
-package org.rpowell.blockchain.util;
+package org.rpowell.blockchain.util.common;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.*;

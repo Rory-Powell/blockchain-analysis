@@ -1,4 +1,4 @@
-package org.rpowell.blockchain.util;
+package org.rpowell.blockchain.util.common;
 
 public class StringConstants {
     // Network
