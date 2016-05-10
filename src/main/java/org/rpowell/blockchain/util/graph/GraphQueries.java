@@ -75,7 +75,7 @@ public class GraphQueries {
      * @return  The query.
      */
     public static String ownerCountQuery() {
-        return getCountQuery(Labels.WALLET); // TODO : This is the tough one - Persistence logic will need changed
+        return getCountQuery(Labels.WALLET);
     }
 
     /**
