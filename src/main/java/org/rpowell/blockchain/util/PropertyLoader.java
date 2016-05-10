@@ -23,13 +23,13 @@ public class PropertyLoader {
             properties.load(input);
             propertyValue = properties.getProperty(propertyName);
         } catch (IOException e) {
-            log.error("IOException", e);
+            log.error("IOException when loading property", e);
         } finally {
             if (input != null) {
                 try {
                     input.close();
                 } catch (IOException e) {
-                    log.error("IOException", e);
+                    log.error("IOException when closing input stream", e);
                 }
             }
         }

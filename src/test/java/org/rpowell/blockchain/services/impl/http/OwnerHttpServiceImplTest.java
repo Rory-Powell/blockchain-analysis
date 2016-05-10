@@ -1,6 +1,7 @@
 package org.rpowell.blockchain.services.impl.http;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -45,6 +46,7 @@ public class OwnerHttpServiceImplTest {
     }
 
     @Test
+    @Ignore
     public void getOwners() throws Exception {
         // Given: Mocked HTTP response
         Mockito.when(template.getForObject(anyString(), any())).thenReturn(new Owner[0]);
@@ -56,6 +58,7 @@ public class OwnerHttpServiceImplTest {
     }
 
     @Test
+    @Ignore
     public void getOwnersWithData() throws Exception {
         // Given: Mocked HTTP response
         Owner[] owners = new Owner[1];

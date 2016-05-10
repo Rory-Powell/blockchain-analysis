@@ -1,6 +1,7 @@
 package org.rpowell.blockchain.services.impl.http;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -39,6 +40,7 @@ public class BlockchainHttpServiceImplTest {
     }
 
     @Test
+    @Ignore
     public void getBlockByHash() throws Exception {
         // Given: Mocked HTTP response
         Mockito.when(template.getForObject(anyString(), any())).thenReturn(new Block());
@@ -50,6 +52,7 @@ public class BlockchainHttpServiceImplTest {
     }
 
     @Test
+    @Ignore
     public void getLatestBlock() throws Exception {
         // Given: Mocked HTTP response
         Mockito.when(template.getForObject(anyString(), any())).thenReturn(new LatestBlock());
@@ -61,6 +64,7 @@ public class BlockchainHttpServiceImplTest {
     }
 
     @Test
+    @Ignore
     public void getAddress() throws Exception {
         // Given: Mocked HTTP response
         Mockito.when(template.getForObject(anyString(), any())).thenReturn(new Address());

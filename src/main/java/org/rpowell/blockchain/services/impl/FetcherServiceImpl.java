@@ -138,7 +138,7 @@ public class FetcherServiceImpl implements IFetcherService {
                 }
             } catch (Exception e) {
                 log.error("Error downloading block", e);
-                log.error("Sleeping for one minute", e);
+                log.info("Sleeping for one minute", e);
                 try {
                     Thread.sleep(TimeUnit.MINUTES.toMillis(1));
                 } catch (InterruptedException e1) {

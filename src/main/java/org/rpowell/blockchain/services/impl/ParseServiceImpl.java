@@ -129,7 +129,7 @@ public class ParseServiceImpl implements IParseService {
                 persistOwners();
             }
         } catch (Exception e) {
-            log.error("Error writing to database");
+            log.error("Error writing to database", e);
         } finally {
             // Always ensure inserter is shutdown
             if(!isShutdown && batchInserter != null) {
